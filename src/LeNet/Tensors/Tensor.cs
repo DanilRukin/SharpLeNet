@@ -24,12 +24,12 @@ namespace LeNet.Tensors
             _values = new List<double>(Size.Width * Size.Depth * Size.Height);
         }
 
-        public Tensor(int heigth, int width, int depth):
-            this(new TensorSize() { Height = heigth, Width = width, Depth = depth })
+        public Tensor(int depth, int height, int width) :
+            this(new TensorSize() { Height = height, Width = width, Depth = depth })
         { 
         }
 
-        public double this[int height, int width, int depth]
+        public double this[int depth, int height, int width]
         {
             get => _values[height * DW + width + Size.Depth + depth];
             set => _values[height * DW + width + Size.Depth + depth] = value;
