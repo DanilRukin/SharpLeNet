@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LeNet\LeNet.csproj" />
+    <ProjectReference Include="..\SharpLeNet.Core\SharpLeNet.Core.csproj" />
   </ItemGroup>
 
 </Project>
