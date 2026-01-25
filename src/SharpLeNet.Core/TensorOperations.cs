@@ -135,4 +135,84 @@ public static class TensorOperations
         return new Tensor(result, a.Shape, a, null, TensorOperation.Neg,
             a.RequiresGrad);
     }
+
+    /// <summary>
+    /// Операция вычисления функции ReLU для тензора.
+    /// ReLU: max(0, x)
+    /// </summary>
+    /// <param name="a">Тензор, для которого выполняется вычисление ReLU</param>
+    public static Tensor ReLU(this Tensor a)
+    {
+        double[] resultData = new double[a.Size];
+        for (int i = 0; i < a.Size; i++)
+        {
+            resultData[i] = Math.Max(0, a.Data[i]);
+        }
+
+        return new Tensor(resultData, a.Shape, a, null, TensorOperation.ReLU,
+            a.RequiresGrad);
+    }
+
+    /// <summary>
+    /// Операция вычисления Softmax
+    /// </summary>
+    /// <param name="a">Тензор, для которого выполняется вычисление Softmax</param>
+    public static Tensor Softmax(this Tensor a)
+    {
+        if (a.Rank != 2)
+            throw new NotImplementedException("Softmax реализован только для матриц " +
+                "(2D тензоры)");
+
+        int batchSize = a.Shape[0];
+        int numClasses = a.Shape[1];
+
+        double[] resultData = new double[a.Size];
+
+        for (int i = 0; i < batchSize; i++)
+        {
+            // Находим максимум для численной стабильности
+            double maxValue = double.MinValue;
+            for (int j = 0; j < numClasses; j++)
+            {
+                if (a[i, j] > maxValue)
+                    maxValue = a[i, j];
+            }
+
+            // Вычисляем экспоненты
+            double sumExp = 0;
+            double[] exps = new double[numClasses];
+
+            for (int j = 0; j < numClasses; j++)
+            {
+                exps[j] = Math.Exp(a[i, j] - maxValue); // вычитаем максимум для стабильности
+                sumExp += exps[j];
+            }
+
+            // Нормализуем
+            for (int j = 0; j < numClasses; j++)
+            {
+                resultData[i * numClasses + j] = exps[j] / sumExp;
+            }
+        }
+
+        return new Tensor(resultData, a.Shape, a, null, TensorOperation.Softmax,
+            a.RequiresGrad);
+    }
+
+    /// <summary>
+    /// Операция вычисления логарифма
+    /// </summary>
+    /// <param name="a">Тензор, для которого выполняется вычисление логарифма</param>
+    public static Tensor Log(this Tensor a)
+    {
+        double[] resultData = new double[a.Size];
+        for (int i = 0; i < a.Size; i++)
+        {
+            resultData[i] = Math.Log(a.Data[i]);
+        }
+
+        return new Tensor(resultData, a.Shape, a, null, TensorOperation.Log,
+            a.RequiresGrad);
+    }
+
 }

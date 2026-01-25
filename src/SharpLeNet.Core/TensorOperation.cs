@@ -37,5 +37,20 @@ public enum TensorOperation
     /// <summary>
     /// Операция суммирования всех элементов тензора (в результате - скаляр)
     /// </summary>
-    Sum
+    Sum,
+    
+    /// <summary>
+    /// ReLU
+    /// </summary>
+    ReLU,
+
+    /// <summary>
+    /// Softmax
+    /// </summary>
+    Softmax,
+
+    /// <summary>
+    /// Логарифм
+    /// </summary>
+    Log
 }

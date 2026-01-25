@@ -326,6 +326,43 @@ public class Tensor
                 }
                 break;
 
+            case TensorOperation.ReLU:
+                // d(L)/dx = d(L)/dReLU * (x > 0 ? 1 : 0)
+                if (LeftParent != null)
+                {
+                    double[] reluPrimeData = new double[Size];
+                    for (int i = 0; i < Size; i++)
+                    {
+                        reluPrimeData[i] = LeftParent.Data[i] > 0 ? 1.0 : 0.0;
+                    }
+                    Tensor reluPrime = new(reluPrimeData, Shape);
+                    Tensor gradForParent = Grad! * reluPrime;
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
+            case TensorOperation.Softmax:
+                // Производная softmax сложная, но мы ее реализуем через CrossEntropy позже
+                // Пока оставим placeholder
+                throw new NotImplementedException("Вычисление производной Softmax будет " +
+                    "реализовано позже через CrossEntropy");
+                break;
+
+            case TensorOperation.Log:
+                // d(L)/dx = d(L)/d(log(x)) * (1/x)
+                if (LeftParent != null)
+                {
+                    double[] logPrimeData = new double[Size];
+                    for (int i = 0; i < Size; i++)
+                    {
+                        logPrimeData[i] = 1.0 / LeftParent.Data[i];
+                    }
+                    Tensor logPrime = new(logPrimeData, Shape);
+                    Tensor gradForParent = Grad! * logPrime;
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
             default:
                 // Листовой узел (исходные данные) - не имеет родителей
                 break;
