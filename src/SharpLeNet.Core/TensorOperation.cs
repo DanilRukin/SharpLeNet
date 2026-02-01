@@ -50,6 +50,11 @@ public enum TensorOperation
     Softmax,
 
     /// <summary>
+    /// Softmax + CrossEntropy
+    /// </summary>
+    SoftmaxCrossEntropy,
+
+    /// <summary>
     /// Логарифм
     /// </summary>
     Log

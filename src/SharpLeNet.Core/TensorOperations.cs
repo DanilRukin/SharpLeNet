@@ -160,31 +160,28 @@ public static class TensorOperations
     public static Tensor Softmax(this Tensor a)
     {
         if (a.Rank != 2)
-            throw new NotImplementedException("Softmax реализован только для матриц " +
-                "(2D тензоры)");
+            throw new NotImplementedException("Softmax поддерживается только для матриц!");
 
         int batchSize = a.Shape[0];
         int numClasses = a.Shape[1];
 
-        double[] resultData = new double[a.Size];
+        var resultData = new double[a.Size];
 
         for (int i = 0; i < batchSize; i++)
         {
             // Находим максимум для численной стабильности
-            double maxValue = double.MinValue;
+            double maxVal = double.MinValue;
             for (int j = 0; j < numClasses; j++)
             {
-                if (a[i, j] > maxValue)
-                    maxValue = a[i, j];
+                if (a[i, j] > maxVal) maxVal = a[i, j];
             }
 
             // Вычисляем экспоненты
             double sumExp = 0;
             double[] exps = new double[numClasses];
-
             for (int j = 0; j < numClasses; j++)
             {
-                exps[j] = Math.Exp(a[i, j] - maxValue); // вычитаем максимум для стабильности
+                exps[j] = Math.Exp(a[i, j] - maxVal);
                 sumExp += exps[j];
             }
 
@@ -197,6 +194,45 @@ public static class TensorOperations
 
         return new Tensor(resultData, a.Shape, a, null, TensorOperation.Softmax,
             a.RequiresGrad);
+    }
+
+    /// <summary>
+    /// Вычисляет Softmax + CrossEntropy Loss (вместе для эффективности)
+    /// </summary>
+    /// <param name="logits"></param>
+    /// <param name="labels"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public static (Tensor softmaxOutput, Tensor loss) SoftmaxCrossEntropy(
+        this Tensor logits, Tensor labels)
+    {
+        if (logits.Rank != 2 || labels.Rank != 2)
+            throw new ArgumentException("Оба тензора должны быть матрицами!");
+        if (!logits.Shape.SequenceEqual(labels.Shape))
+            throw new ArgumentException("Измерения и их размерности должны совпадать!");
+
+        int batchSize = logits.Shape[0];
+        int numClasses = logits.Shape[1];
+
+        // Вычисляем Softmax
+        Tensor softmaxOutput = logits.Softmax();
+
+        // Вычисляем Cross-Entropy Loss
+        double lossValue = 0;
+        for (int i = 0; i < batchSize; i++)
+        {
+            for (int j = 0; j < numClasses; j++)
+            {
+                // L = -Σ y_true * log(y_pred)
+                // где y_pred = softmax_output
+                lossValue -= labels[i, j] * Math.Log(softmaxOutput[i, j] + 1e-10); // добавляем epsilon для стабильности
+            }
+        }
+        lossValue /= batchSize; // // усредняем по батчу
+
+        Tensor loss = new([lossValue], [1], logits, labels, TensorOperation.SoftmaxCrossEntropy,
+            logits.RequiresGrad || labels.RequiresGrad);
+
+        return (softmaxOutput, loss);
     }
 
     /// <summary>

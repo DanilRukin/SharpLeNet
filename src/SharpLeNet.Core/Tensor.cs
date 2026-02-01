@@ -251,6 +251,11 @@ public class Tensor
         if (!Shape.SequenceEqual(gradient.Shape))
             throw new ArgumentException("Кол-во измерений и их размерность градиента " +
                 "должна сопадать с кол-вом измерений и их размерностью у данного экземпляра");
+        if (Grad == null)
+        {
+            Grad = new Tensor(gradient.Shape);
+        }
+
         for (int i = 0; i < Size; i++)
         {
             Grad!.Data[i] += gradient.Data[i];
@@ -342,10 +347,59 @@ public class Tensor
                 break;
 
             case TensorOperation.Softmax:
-                // Производная softmax сложная, но мы ее реализуем через CrossEntropy позже
-                // Пока оставим placeholder
-                throw new NotImplementedException("Вычисление производной Softmax будет " +
-                    "реализовано позже через CrossEntropy");
+                // Для softmax (не используется с CrossEntropy)
+                // Производная сложная: ∂softmax_i/∂z_j = softmax_i * (δ_ij - softmax_j)
+                // где δ_ij = 1 если i==j, иначе 0
+                if (LeftParent != null)
+                {
+                    int batchSize = Shape[0];
+                    int numClasses = Shape[1];
+                    Tensor gradForParent = new(LeftParent.Shape);
+                    for (int b = 0; b < batchSize; b++)
+                    {
+                        // Вычисляем градиент для каждого примера в батче
+                        for (int i = 0; i < numClasses; i++)
+                        {
+                            double sum = 0;
+                            for (int j = 0; j < numClasses; j++)
+                            {
+                                // ∂L/∂z_i = Σ_j (∂L/∂softmax_j * ∂softmax_j/∂z_i)
+                                // ∂softmax_j/∂z_i = softmax_j * (δ_ji - softmax_i)
+                                double delta_ji = (j == i) ? 1.0 : 0.0;
+                                double dsoftmax_j_dz_i = this[b, j] * (delta_ji - this[b, i]);
+                                sum += Grad![b, j] * dsoftmax_j_dz_i;
+                            }
+                            gradForParent[b, i] = sum;
+                        }
+                    }
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
+            case TensorOperation.SoftmaxCrossEntropy:
+                // Магически простой градиент: dL/dz = softmax(z) - y_true
+                if (LeftParent != null && RightParent != null) // LeftParent = logits, RightParent = labels
+                {
+                    int batchSize = LeftParent.Shape[0];
+                    int numClasses = LeftParent.Shape[1];
+
+                    // Вычисляем softmax(z) - y
+                    Tensor gradForParent = new Tensor(LeftParent.Shape);
+
+                    // Сначала вычисляем softmax
+                    Tensor softmax = LeftParent.Softmax();
+
+                    // Вычисляем градиент: softmax - labels
+                    for (int i = 0; i < batchSize; i++)
+                    {
+                        for (int j = 0; j < numClasses; j++)
+                        {
+                            gradForParent[i, j] = (softmax[i, j] - RightParent[i, j]) / batchSize;
+                        }
+                    }
+                    // Передаем градиент только к logits (labels не обучаются)
+                    LeftParent.Backward(gradForParent);
+                }
                 break;
 
             case TensorOperation.Log:
@@ -373,6 +427,17 @@ public class Tensor
     /// Обнуляет градиент
     /// </summary>
     public void ZeroGrad() => Grad?.Fill(0.0);
+
+    public static Tensor Random(params int[] shapes)
+    {
+        Random rnd = new();
+        double[] randomData = new double[shapes.Aggregate(1, (a, b) => a * b)];
+        for (int i = 0; i < randomData.Length; i++)
+        {
+            randomData[i] = rnd.NextDouble();
+        }
+        return new Tensor(randomData, shapes);
+    }
 
     public static Tensor operator +(Tensor a, Tensor b) => a.Add(b);
 

@@ -63,7 +63,8 @@ public class LinearLayer : Layer
         // b: [output_size]
 
         // Транспонируем веса для умножения
-        Tensor wTransposed = Weights.Transpose(); // теперь [input_size, output_size]
+        //Tensor wTransposed = Weights.Transpose(); // теперь [input_size, output_size]
+        Tensor wTransposed = Weights; // теперь [input_size, output_size]
         Tensor output = input.MatMul(wTransposed); // [batch_size, output_size]
 
         // Добавляем смещение (broadcast по batch dimension)
