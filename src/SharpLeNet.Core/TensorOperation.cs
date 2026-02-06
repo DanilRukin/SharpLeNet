@@ -57,5 +57,15 @@ public enum TensorOperation
     /// <summary>
     /// Логарифм
     /// </summary>
-    Log
+    Log,
+
+    /// <summary>
+    /// Вычитание
+    /// </summary>
+    Subtract,
+
+    /// <summary>
+    /// Broadcast операции
+    /// </summary>
+    Broadcast,
 }

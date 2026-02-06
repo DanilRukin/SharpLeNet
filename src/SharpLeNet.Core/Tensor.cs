@@ -220,8 +220,17 @@ public class Tensor
     /// <param name="gradient">Градиент</param>
     public void Backward(Tensor? gradient = null)
     {
+        Console.WriteLine($"\n[DEBUG] Tensor.Backward() called");
+        Console.WriteLine($"  Operation: {Operation}");
+        Console.WriteLine($"  RequiresGrad: {RequiresGrad}");
+        Console.WriteLine($"  Gradient provided: {gradient != null}");
+
         if (!RequiresGrad)
+        {
+            Console.WriteLine("  [SKIP] No grad required");
             return;
+        }    
+            
 
         // Если gradient == null и это скаляр (размер = 1), инициализируем как 1.0
         if (gradient == null)
@@ -248,6 +257,10 @@ public class Tensor
     /// <exception cref="ArgumentException"></exception>
     private void AddGradient(Tensor gradient)
     {
+        Console.WriteLine($"[DEBUG] AddGradient called for tensor with operation: {Operation}");
+        Console.WriteLine($"[DEBUG]   Current Grad is null: {Grad == null}");
+        Console.WriteLine($"[DEBUG]   Gradient shape: [{string.Join(", ", gradient.Shape)}]");
+
         if (!Shape.SequenceEqual(gradient.Shape))
             throw new ArgumentException("Кол-во измерений и их размерность градиента " +
                 "должна сопадать с кол-вом измерений и их размерностью у данного экземпляра");
@@ -267,6 +280,11 @@ public class Tensor
     /// </summary>
     private void BackwardToParents()
     {
+        Console.WriteLine($"\n[DEBUG] BackwardToParents для операции {Operation}:");
+        Console.WriteLine($"  LeftParent is null: {LeftParent == null}");
+        Console.WriteLine($"  RightParent is null: {RightParent == null}");
+        Console.WriteLine($"  Grad is null: {Grad == null}");
+
         switch (Operation)
         {
             case TensorOperation.Add:
@@ -275,6 +293,40 @@ public class Tensor
                 LeftParent?.Backward(Grad);
                 RightParent?.Backward(Grad);
                 break;
+
+            case TensorOperation.Subtract:
+                // d(L)/dA = d(L)/dC * 1
+                // d(L)/dB = d(L)/dC * (-1)
+                LeftParent?.Backward(Grad);
+                if (RightParent != null)
+                {
+                    Tensor negativeGrad = new(Grad!.Shape);
+                    negativeGrad.Fill(-1.0);
+                    Tensor gradForRight = Grad! * negativeGrad;
+                    RightParent.Backward(gradForRight);
+                }
+                break;
+
+            case TensorOperation.Sum:
+                // Для операции суммирования всех элементов в скаляр
+                // ∂L/∂x_i = ∂L/∂sum * 1 (для каждого элемента)
+                Console.WriteLine($"[DEBUG] Processing Sum backward, Grad[0] = {Grad?.Data[0]:F4}");
+                if (LeftParent != null && Grad != null)
+                {
+                    // Grad - это скаляр (∂L/∂sum)
+                    double scalarGrad = Grad.Data[0];
+
+                    // Создаем тензор той же формы, что и LeftParent
+                    Tensor gradForParent = new Tensor(LeftParent.Shape);
+
+                    // Заполняем scalarGrad для всех элементов
+                    gradForParent.Fill(scalarGrad);
+                    
+                    Console.WriteLine($"[DEBUG] Passing gradient to parent shape: [{string.Join(", ", LeftParent.Shape)}]");
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
             case TensorOperation.Mul:
                 // d(L)/dA = d(L)/dC * B
                 // d(L)/dB = d(L)/dC * A
@@ -417,6 +469,34 @@ public class Tensor
                 }
                 break;
 
+            case TensorOperation.Broadcast:
+                // Когда тензор broadcast'ится (например, bias [n] -> [batch, n])
+                // Градиент для оригинала = sum градиентов по broadcast dimension
+                Console.WriteLine($"[DEBUG] Processing Broadcast backward");
+                if (LeftParent != null && Grad != null)
+                {
+                    // LeftParent - оригинальный тензор (например, bias)
+                    // Grad - градиент broadcasted тензора [batch, features]
+
+                    int batchSize = Shape[0];
+                    int features = Shape[1];
+
+                    Tensor gradForParent = new Tensor(LeftParent.Shape);
+
+                    // Суммируем градиенты по batch dimension
+                    for (int b = 0; b < batchSize; b++)
+                    {
+                        for (int f = 0; f < features; f++)
+                        {
+                            gradForParent.Data[f] += Grad.Data[b * features + f];
+                        }
+                    }
+
+                    Console.WriteLine($"[DEBUG] Broadcast: summing over batch dim, passing to parent");
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
             default:
                 // Листовой узел (исходные данные) - не имеет родителей
                 break;
@@ -444,4 +524,6 @@ public class Tensor
     public static Tensor operator *(Tensor a, Tensor b) => a.Mul(b);
 
     public static Tensor operator -(Tensor a) => a.Neg();
+
+    public static Tensor operator -(Tensor a, Tensor b) => a.Subtract(b);
 }

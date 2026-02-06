@@ -28,6 +28,25 @@ public static class TensorOperations
     }
 
     /// <summary>
+    /// Операция сложения тензоров
+    /// </summary>
+    /// <param name="a">Левый операнд</param>
+    /// <param name="b">Правый операнд</param>
+    public static Tensor Subtract(this Tensor a, Tensor b)
+    {
+        if (!a.Shape.SequenceEqual(b.Shape))
+            throw new ArgumentException("Кол-во измерений и их размерности у слагаемых " +
+                "должны совпадать!");
+        double[] resultData = new double[a.Size];
+        for (int i = 0; i < a.Size; i++)
+        {
+            resultData[i] = a.Data[i] - b.Data[i];
+        }
+        return new Tensor(resultData, a.Shape, a, b, TensorOperation.Subtract,
+            a.RequiresGrad || b.RequiresGrad);
+    }
+
+    /// <summary>
     /// Операция умножения тензоров (поэлементная)
     /// </summary>
     /// <param name="a">Левый операнд</param>
@@ -248,6 +267,31 @@ public static class TensorOperations
         }
 
         return new Tensor(resultData, a.Shape, a, null, TensorOperation.Log,
+            a.RequiresGrad);
+    }
+
+    /// <summary>
+    /// Broadcast тензора
+    /// </summary>
+    public static Tensor Broadcast(this Tensor a, int[] newShape)
+    {
+        // Простая реализация для broadcast bias в LinearLayer
+        // a: [output_size]
+        // newShape: [batch_size, output_size]
+
+        double[] broadcastedData = new double[newShape.Aggregate(1, (x, y) => x * y)];
+        int batchSize = newShape[0];
+        int features = newShape[1];
+
+        for (int i = 0; i < batchSize; i++)
+        {
+            for (int j = 0; j < features; j++)
+            {
+                broadcastedData[i * features + j] = a.Data[j];
+            }
+        }
+
+        return new Tensor(broadcastedData, newShape, a, null, TensorOperation.Broadcast, 
             a.RequiresGrad);
     }
 

@@ -68,14 +68,14 @@ public class LinearLayer : Layer
         Tensor output = input.MatMul(wTransposed); // [batch_size, output_size]
 
         // Добавляем смещение (broadcast по batch dimension)
-        for (int i = 0; i < batchSize; i++)
-        {
-            for (int j = 0; j < _outputSize; j++)
-            {
-                output[i, j] += Biases[j];
-            }
-        }
+        Tensor broadcastedBias = BroadcastBias(Biases, batchSize);
+        output = output + broadcastedBias;
 
         return output;
+    }
+
+    private Tensor BroadcastBias(Tensor bias, int batchSize)
+    {
+        return bias.Broadcast([batchSize, bias.Size]);
     }
 }

@@ -193,7 +193,7 @@ namespace LeNetConsoleClient
             var target = new Tensor(new double[] { 0, 1 }, new int[] { 1, 2 });
 
             // Loss
-            var diff = output + - target;
+            var diff = output - target;
             var diffSq = diff * diff;
             var loss = diffSq.Sum();
 
@@ -244,8 +244,67 @@ namespace LeNetConsoleClient
             }
         }
 
+        static void TestSimpleGradient()
+        {
+            Console.WriteLine("=== Простой тест градиентов ===");
+
+            var layer = new LinearLayer(inputSize: 3, outputSize: 2);
+
+            // Фиксируем веса
+            layer.Weights.Data[0] = 0.1; layer.Weights.Data[1] = 0.2;
+            layer.Weights.Data[2] = 0.3; layer.Weights.Data[3] = 0.4;
+            layer.Weights.Data[4] = 0.5; layer.Weights.Data[5] = 0.6;
+            layer.Biases.Data[0] = 0.01; layer.Biases.Data[1] = 0.02;
+
+            // Вход
+            var input = new Tensor(new double[] { 1, 2, 3 }, new int[] { 1, 3 }, requiresGrad: true);
+
+            // Прямой проход
+            var output = layer.Forward(input);
+
+            // Простая loss: сумма выходов (без квадратов)
+            var loss = output.Sum();
+
+            Console.WriteLine($"Output: [{output[0, 0]:F4}, {output[0, 1]:F4}]");
+            Console.WriteLine($"Loss: {loss.Data[0]:F4}");
+
+            // Обнуляем градиенты
+            layer.ZeroGrad();
+            input.ZeroGrad();
+
+            // Backward
+            loss.Backward();
+
+            Console.WriteLine("\nГрадиенты:");
+
+            if (layer.Weights.Grad != null)
+            {
+                Console.WriteLine("dL/dWeights:");
+                Console.WriteLine($"[{layer.Weights.Grad[0, 0]:F6}, {layer.Weights.Grad[0, 1]:F6}]");
+                Console.WriteLine($"[{layer.Weights.Grad[1, 0]:F6}, {layer.Weights.Grad[1, 1]:F6}]");
+                Console.WriteLine($"[{layer.Weights.Grad[2, 0]:F6}, {layer.Weights.Grad[2, 1]:F6}]");
+            }
+
+            if (layer.Biases.Grad != null)
+            {
+                Console.WriteLine($"dL/dBiases: [{layer.Biases.Grad[0]:F6}, {layer.Biases.Grad[1]:F6}]");
+            }
+
+            // Аналитический расчет:
+            // ∂L/∂output = [1, 1] (так как loss = sum(output))
+            // ∂L/∂Weights = input^T @ [1, 1] = [[1, 1], [2, 2], [3, 3]]
+            // ∂L/∂Biases = [1, 1]
+            Console.WriteLine("\nАналитически ожидается:");
+            Console.WriteLine("dL/dWeights:");
+            Console.WriteLine("[1.000000, 1.000000]");
+            Console.WriteLine("[2.000000, 2.000000]");
+            Console.WriteLine("[3.000000, 3.000000]");
+            Console.WriteLine("dL/dBiases: [1.000000, 1.000000]");
+        }
+
         static void Main()
         {
+            //TestSimpleGradient();
             TestLinearGradientsWithDebug();
             //TestLeNetLayers();
             //DebugLinearLayer();
