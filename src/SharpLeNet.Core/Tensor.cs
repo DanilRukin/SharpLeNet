@@ -220,8 +220,17 @@ public class Tensor
     /// <param name="gradient">Градиент</param>
     public void Backward(Tensor? gradient = null)
     {
+        Console.WriteLine($"\n[DEBUG] Tensor.Backward() called");
+        Console.WriteLine($"  Operation: {Operation}");
+        Console.WriteLine($"  RequiresGrad: {RequiresGrad}");
+        Console.WriteLine($"  Gradient provided: {gradient != null}");
+
         if (!RequiresGrad)
+        {
+            Console.WriteLine("  [SKIP] No grad required");
             return;
+        }    
+            
 
         // Если gradient == null и это скаляр (размер = 1), инициализируем как 1.0
         if (gradient == null)
@@ -248,9 +257,18 @@ public class Tensor
     /// <exception cref="ArgumentException"></exception>
     private void AddGradient(Tensor gradient)
     {
+        Console.WriteLine($"[DEBUG] AddGradient called for tensor with operation: {Operation}");
+        Console.WriteLine($"[DEBUG]   Current Grad is null: {Grad == null}");
+        Console.WriteLine($"[DEBUG]   Gradient shape: [{string.Join(", ", gradient.Shape)}]");
+
         if (!Shape.SequenceEqual(gradient.Shape))
             throw new ArgumentException("Кол-во измерений и их размерность градиента " +
                 "должна сопадать с кол-вом измерений и их размерностью у данного экземпляра");
+        if (Grad == null)
+        {
+            Grad = new Tensor(gradient.Shape);
+        }
+
         for (int i = 0; i < Size; i++)
         {
             Grad!.Data[i] += gradient.Data[i];
@@ -262,6 +280,11 @@ public class Tensor
     /// </summary>
     private void BackwardToParents()
     {
+        Console.WriteLine($"\n[DEBUG] BackwardToParents для операции {Operation}:");
+        Console.WriteLine($"  LeftParent is null: {LeftParent == null}");
+        Console.WriteLine($"  RightParent is null: {RightParent == null}");
+        Console.WriteLine($"  Grad is null: {Grad == null}");
+
         switch (Operation)
         {
             case TensorOperation.Add:
@@ -270,9 +293,47 @@ public class Tensor
                 LeftParent?.Backward(Grad);
                 RightParent?.Backward(Grad);
                 break;
+
+            case TensorOperation.Subtract:
+                // d(L)/dA = d(L)/dC * 1
+                // d(L)/dB = d(L)/dC * (-1)
+                Console.WriteLine($"[DEBUG SUBTRACT] Grad = [{Grad?.Data[0]:F6}, {Grad?.Data[1]:F6}]");
+                LeftParent?.Backward(Grad);
+                if (RightParent != null)
+                {
+                    Tensor negativeGrad = new(Grad!.Shape);
+                    negativeGrad.Fill(-1.0);
+                    Tensor gradForRight = Grad! * negativeGrad;
+                    RightParent.Backward(gradForRight);
+                }
+                break;
+
+            case TensorOperation.Sum:
+                // Для операции суммирования всех элементов в скаляр
+                // ∂L/∂x_i = ∂L/∂sum * 1 (для каждого элемента)
+                Console.WriteLine($"[DEBUG] Processing Sum backward, Grad[0] = {Grad?.Data[0]:F4}");
+                if (LeftParent != null && Grad != null)
+                {
+                    // Grad - это скаляр (∂L/∂sum)
+                    double scalarGrad = Grad.Data[0];
+
+                    // Создаем тензор той же формы, что и LeftParent
+                    Tensor gradForParent = new Tensor(LeftParent.Shape);
+
+                    // Заполняем scalarGrad для всех элементов
+                    gradForParent.Fill(scalarGrad);
+                    
+                    Console.WriteLine($"[DEBUG] Passing gradient to parent shape: [{string.Join(", ", LeftParent.Shape)}]");
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
             case TensorOperation.Mul:
                 // d(L)/dA = d(L)/dC * B
                 // d(L)/dB = d(L)/dC * A
+                Console.WriteLine($"[DEBUG MUL] Grad = [{Grad?.Data[0]:F6}, {Grad?.Data[1]:F6}]");
+                Console.WriteLine($"[DEBUG MUL] LeftParent Data = [{LeftParent?.Data[0]:F6}, {LeftParent?.Data[1]:F6}]");
+                Console.WriteLine($"[DEBUG MUL] RightParent Data = [{RightParent?.Data[0]:F6}, {RightParent?.Data[1]:F6}]");
                 if (LeftParent != null && RightParent != null)
                 {
                     Tensor gradForLeft = Grad! * RightParent;
@@ -326,6 +387,120 @@ public class Tensor
                 }
                 break;
 
+            case TensorOperation.ReLU:
+                // d(L)/dx = d(L)/dReLU * (x > 0 ? 1 : 0)
+                if (LeftParent != null)
+                {
+                    double[] reluPrimeData = new double[Size];
+                    for (int i = 0; i < Size; i++)
+                    {
+                        reluPrimeData[i] = LeftParent.Data[i] > 0 ? 1.0 : 0.0;
+                    }
+                    Tensor reluPrime = new(reluPrimeData, Shape);
+                    Tensor gradForParent = Grad! * reluPrime;
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
+            case TensorOperation.Softmax:
+                // Для softmax (не используется с CrossEntropy)
+                // Производная сложная: ∂softmax_i/∂z_j = softmax_i * (δ_ij - softmax_j)
+                // где δ_ij = 1 если i==j, иначе 0
+                if (LeftParent != null)
+                {
+                    int batchSize = Shape[0];
+                    int numClasses = Shape[1];
+                    Tensor gradForParent = new(LeftParent.Shape);
+                    for (int b = 0; b < batchSize; b++)
+                    {
+                        // Вычисляем градиент для каждого примера в батче
+                        for (int i = 0; i < numClasses; i++)
+                        {
+                            double sum = 0;
+                            for (int j = 0; j < numClasses; j++)
+                            {
+                                // ∂L/∂z_i = Σ_j (∂L/∂softmax_j * ∂softmax_j/∂z_i)
+                                // ∂softmax_j/∂z_i = softmax_j * (δ_ji - softmax_i)
+                                double delta_ji = (j == i) ? 1.0 : 0.0;
+                                double dsoftmax_j_dz_i = this[b, j] * (delta_ji - this[b, i]);
+                                sum += Grad![b, j] * dsoftmax_j_dz_i;
+                            }
+                            gradForParent[b, i] = sum;
+                        }
+                    }
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
+            case TensorOperation.SoftmaxCrossEntropy:
+                // Магически простой градиент: dL/dz = softmax(z) - y_true
+                if (LeftParent != null && RightParent != null) // LeftParent = logits, RightParent = labels
+                {
+                    int batchSize = LeftParent.Shape[0];
+                    int numClasses = LeftParent.Shape[1];
+
+                    // Вычисляем softmax(z) - y
+                    Tensor gradForParent = new Tensor(LeftParent.Shape);
+
+                    // Сначала вычисляем softmax
+                    Tensor softmax = LeftParent.Softmax();
+
+                    // Вычисляем градиент: softmax - labels
+                    for (int i = 0; i < batchSize; i++)
+                    {
+                        for (int j = 0; j < numClasses; j++)
+                        {
+                            gradForParent[i, j] = (softmax[i, j] - RightParent[i, j]) / batchSize;
+                        }
+                    }
+                    // Передаем градиент только к logits (labels не обучаются)
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
+            case TensorOperation.Log:
+                // d(L)/dx = d(L)/d(log(x)) * (1/x)
+                if (LeftParent != null)
+                {
+                    double[] logPrimeData = new double[Size];
+                    for (int i = 0; i < Size; i++)
+                    {
+                        logPrimeData[i] = 1.0 / LeftParent.Data[i];
+                    }
+                    Tensor logPrime = new(logPrimeData, Shape);
+                    Tensor gradForParent = Grad! * logPrime;
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
+            case TensorOperation.Broadcast:
+                // Когда тензор broadcast'ится (например, bias [n] -> [batch, n])
+                // Градиент для оригинала = sum градиентов по broadcast dimension
+                Console.WriteLine($"[DEBUG] Processing Broadcast backward");
+                if (LeftParent != null && Grad != null)
+                {
+                    // LeftParent - оригинальный тензор (например, bias)
+                    // Grad - градиент broadcasted тензора [batch, features]
+
+                    int batchSize = Shape[0];
+                    int features = Shape[1];
+
+                    Tensor gradForParent = new Tensor(LeftParent.Shape);
+
+                    // Суммируем градиенты по batch dimension
+                    for (int b = 0; b < batchSize; b++)
+                    {
+                        for (int f = 0; f < features; f++)
+                        {
+                            gradForParent.Data[f] += Grad.Data[b * features + f];
+                        }
+                    }
+
+                    Console.WriteLine($"[DEBUG] Broadcast: summing over batch dim, passing to parent");
+                    LeftParent.Backward(gradForParent);
+                }
+                break;
+
             default:
                 // Листовой узел (исходные данные) - не имеет родителей
                 break;
@@ -337,9 +512,22 @@ public class Tensor
     /// </summary>
     public void ZeroGrad() => Grad?.Fill(0.0);
 
+    public static Tensor Random(params int[] shapes)
+    {
+        Random rnd = new();
+        double[] randomData = new double[shapes.Aggregate(1, (a, b) => a * b)];
+        for (int i = 0; i < randomData.Length; i++)
+        {
+            randomData[i] = rnd.NextDouble();
+        }
+        return new Tensor(randomData, shapes);
+    }
+
     public static Tensor operator +(Tensor a, Tensor b) => a.Add(b);
 
     public static Tensor operator *(Tensor a, Tensor b) => a.Mul(b);
 
     public static Tensor operator -(Tensor a) => a.Neg();
+
+    public static Tensor operator -(Tensor a, Tensor b) => a.Subtract(b);
 }
