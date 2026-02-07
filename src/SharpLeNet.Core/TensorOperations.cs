@@ -19,7 +19,7 @@ public static class TensorOperations
             throw new ArgumentException("Кол-во измерений и их размерности у слагаемых " +
                 "должны совпадать!");
         double[] resultData = new double[a.Size];
-        for (int i = 0; i <  a.Size; i++)
+        for (int i = 0; i < a.Size; i++)
         {
             resultData[i] = a.Data[i] + b.Data[i];
         }

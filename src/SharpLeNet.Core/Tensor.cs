@@ -297,6 +297,7 @@ public class Tensor
             case TensorOperation.Subtract:
                 // d(L)/dA = d(L)/dC * 1
                 // d(L)/dB = d(L)/dC * (-1)
+                Console.WriteLine($"[DEBUG SUBTRACT] Grad = [{Grad?.Data[0]:F6}, {Grad?.Data[1]:F6}]");
                 LeftParent?.Backward(Grad);
                 if (RightParent != null)
                 {
@@ -330,6 +331,9 @@ public class Tensor
             case TensorOperation.Mul:
                 // d(L)/dA = d(L)/dC * B
                 // d(L)/dB = d(L)/dC * A
+                Console.WriteLine($"[DEBUG MUL] Grad = [{Grad?.Data[0]:F6}, {Grad?.Data[1]:F6}]");
+                Console.WriteLine($"[DEBUG MUL] LeftParent Data = [{LeftParent?.Data[0]:F6}, {LeftParent?.Data[1]:F6}]");
+                Console.WriteLine($"[DEBUG MUL] RightParent Data = [{RightParent?.Data[0]:F6}, {RightParent?.Data[1]:F6}]");
                 if (LeftParent != null && RightParent != null)
                 {
                     Tensor gradForLeft = Grad! * RightParent;

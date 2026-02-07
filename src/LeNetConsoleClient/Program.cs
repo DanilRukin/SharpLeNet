@@ -302,10 +302,28 @@ namespace LeNetConsoleClient
             Console.WriteLine("dL/dBiases: [1.000000, 1.000000]");
         }
 
+        static void SimpleTest()
+        {
+            var a = new Tensor([2.0, 3.0], [2], requiresGrad: true);
+            var b = new Tensor([1.0, 1.0], [2]);
+
+            // Простая операция
+            var c = a - b;  // [1.0, 2.0]
+            var d = c * c;  // [1.0, 4.0]
+            var loss = d.Sum();  // 5.0
+
+            loss.Backward();
+
+            // Аналитически:
+            // ∂L/∂a = 2*(a-b) = 2*[1.0, 2.0] = [2.0, 4.0]
+            Console.WriteLine($"dL/da: [{a.Grad?.Data[0]:F4}, {a.Grad?.Data[1]:F4}]");
+        }
+
         static void Main()
         {
+            SimpleTest();
             //TestSimpleGradient();
-            TestLinearGradientsWithDebug();
+            //TestLinearGradientsWithDebug();
             //TestLeNetLayers();
             //DebugLinearLayer();
             //DebugMatMulDirectly();
