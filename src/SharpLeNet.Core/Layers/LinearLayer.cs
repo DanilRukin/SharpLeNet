@@ -57,14 +57,12 @@ public class LinearLayer : Layer
                 $"Но получено {input.Shape[1]}");
         int batchSize = input.Shape[0];
 
-        // Вычисляем: output = input * W^T + b
+        // Вычисляем: output = input * W + b
         // input: [batch_size, input_size]
-        // W: [output_size, input_size]
+        // W: [input_size, output_size]
         // b: [output_size]
 
-        // Транспонируем веса для умножения
-        //Tensor wTransposed = Weights.Transpose(); // теперь [input_size, output_size]
-        Tensor wTransposed = Weights; // теперь [input_size, output_size]
+        Tensor wTransposed = Weights; // [input_size, output_size]
         Tensor output = input.MatMul(wTransposed); // [batch_size, output_size]
 
         // Добавляем смещение (broadcast по batch dimension)

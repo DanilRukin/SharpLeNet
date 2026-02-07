@@ -28,7 +28,7 @@ public static class TensorOperations
     }
 
     /// <summary>
-    /// Операция сложения тензоров
+    /// Операция вычитания тензоров
     /// </summary>
     /// <param name="a">Левый операнд</param>
     /// <param name="b">Правый операнд</param>
