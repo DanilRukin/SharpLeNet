@@ -68,4 +68,14 @@ public enum TensorOperation
     /// Broadcast операции
     /// </summary>
     Broadcast,
+
+    /// <summary>
+    /// Деление (поэлементное)
+    /// </summary>
+    Div,
+
+    /// <summary>
+    /// Умножение на скаляр
+    /// </summary>
+    MulScalar,
 }

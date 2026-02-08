@@ -222,7 +222,7 @@ public static class TensorOperations
     /// <param name="labels"></param>
     /// <exception cref="ArgumentException"></exception>
     public static (Tensor softmaxOutput, Tensor loss) SoftmaxCrossEntropy(
-        this Tensor logits, Tensor labels)
+    this Tensor logits, Tensor labels)
     {
         if (logits.Rank != 2 || labels.Rank != 2)
             throw new ArgumentException("Оба тензора должны быть матрицами!");
@@ -232,24 +232,37 @@ public static class TensorOperations
         int batchSize = logits.Shape[0];
         int numClasses = logits.Shape[1];
 
-        // Вычисляем Softmax
+        // Вычисляем Softmax (это часть графа!)
         Tensor softmaxOutput = logits.Softmax();
 
-        // Вычисляем Cross-Entropy Loss
-        double lossValue = 0;
+        // Вычисляем Cross-Entropy Loss через операции тензоров
+        // L = -mean(y * log(softmax))
+
+        // 1. log(softmax)
+        var logSoftmax = softmaxOutput.Log();
+
+        // 2. y * log(softmax)  
+        var yLogSoftmax = labels * logSoftmax;
+
+        // 3. Суммируем по классам и батчу
+        var sumPerSample = new Tensor(new int[] { batchSize });
         for (int i = 0; i < batchSize; i++)
         {
+            double sum = 0;
             for (int j = 0; j < numClasses; j++)
             {
-                // L = -Σ y_true * log(y_pred)
-                // где y_pred = softmax_output
-                lossValue -= labels[i, j] * Math.Log(softmaxOutput[i, j] + 1e-10); // добавляем epsilon для стабильности
+                sum += yLogSoftmax[i, j];
             }
+            sumPerSample.Data[i] = sum;
         }
-        lossValue /= batchSize; // // усредняем по батчу
 
-        Tensor loss = new([lossValue], [1], logits, labels, TensorOperation.SoftmaxCrossEntropy,
-            logits.RequiresGrad || labels.RequiresGrad);
+        // 4. Берем отрицание и усредняем
+        var negSum = -sumPerSample;
+        var lossSum = negSum.Sum(); // Сумма по батчу
+
+        // 5. Делим на размер батча
+        var batchSizeTensor = new Tensor(new double[] { batchSize }, new int[] { 1 });
+        var loss = lossSum / batchSizeTensor;
 
         return (softmaxOutput, loss);
     }
@@ -295,4 +308,48 @@ public static class TensorOperations
             a.RequiresGrad);
     }
 
+    /// <summary>
+    /// Поэлементное деление тензоров
+    /// </summary>
+    /// <param name="a">Левый операнд</param>
+    /// <param name="b">Правый операнд</param>
+    public static Tensor Div(this Tensor a, Tensor b)
+    {
+        if (!a.Shape.SequenceEqual(b.Shape))
+            throw new ArgumentException("Размерности операндов должны совпадать!");
+        double[] resultData = new double[a.Size];
+        for (int i = 0; i < a.Size; i++)
+        {
+            resultData[i] = a.Data[i] / b.Data[i];
+        }
+
+        return new(resultData, a.Shape, a, b, TensorOperation.Div,
+            a.RequiresGrad || b.RequiresGrad);
+    }
+
+    /// <summary>
+    /// Умножение тензора на скаляр
+    /// </summary>
+    /// <param name="a">Тензор</param>
+    /// <param name="scalar">Число для умножения элементов</param>
+    public static Tensor MulScalar(this Tensor a, double scalar)
+    {
+        double[] resultData = new double[a.Size];
+        for (int i = 0; i < a.Size; i++)
+        {
+            resultData[i] = a.Data[i] * scalar;
+        }
+        Tensor scalarTensor = new([scalar], [1]);
+
+        return new(resultData, a.Shape, a, scalarTensor, TensorOperation.MulScalar,
+            a.RequiresGrad);
+    }
+
+    /// <summary>
+    /// Деление тензора на скаляр
+    /// </summary>
+    /// <param name="a">Тензор</param>
+    /// <param name="scalar">число для деления</param>
+    public static Tensor DivScalar(this Tensor a, double scalar) =>
+        a.MulScalar(1.0 / scalar);
 }

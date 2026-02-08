@@ -182,7 +182,7 @@ public class Tensor
     /// </summary>
     public Tensor Clone()
     {
-        return new Tensor((double[])Data.Clone(), (int[])Shape.Clone());
+        return new Tensor((double[])Data.Clone(), (int[])Shape.Clone(), RequiresGrad);
     }
 
     /// <summary>
@@ -340,6 +340,53 @@ public class Tensor
                     Tensor gradForRight = Grad! * LeftParent;
                     LeftParent.Backward(gradForLeft);
                     RightParent.Backward(gradForRight);
+                }
+                break;
+
+            case TensorOperation.Div:
+                // C = A / B
+                // dL/dA = dL/dC * (1/B)
+                // dL/dB = dL/dC * (-A/(B^2))
+                if (LeftParent != null && RightParent != null)
+                {
+                    // Для A: grad * (1/B)
+                    var oneOverB = new Tensor(RightParent.Shape);
+                    for (int i = 0; i < RightParent.Size; i++)
+                    {
+                        oneOverB.Data[i] = 1.0 / RightParent.Data[i];
+                    }
+                    var gradForLeft = Grad! * oneOverB;
+                    LeftParent.Backward(gradForLeft);
+
+                    // Для B: grad * (-A/(B^2))
+                    var minusAOverBSquared = new Tensor(LeftParent.Shape);
+                    for (int i = 0; i < LeftParent.Size; i++)
+                    {
+                        double b = RightParent.Data[i];
+                        minusAOverBSquared.Data[i] = -LeftParent.Data[i] / (b * b);
+                    }
+                    var gradForRight = Grad! * minusAOverBSquared;
+                    RightParent.Backward(gradForRight);
+                }
+                break;
+
+            case TensorOperation.MulScalar:
+                // C = A * scalar
+                // dL/dA = dL/dC * scalar
+                // scalar хранится в RightParent (тензор [1])
+                if (LeftParent != null && RightParent != null && RightParent.Size == 1)
+                {
+                    double scalar = RightParent.Data[0];
+
+                    // Создаем тензор со скаляром той же формы что и градиент
+                    var scalarTensor = new Tensor(Grad!.Shape);
+                    scalarTensor.Fill(scalar);
+
+                    var gradForParent = Grad! * scalarTensor;
+                    LeftParent.Backward(gradForParent);
+
+                    // Для скаляра обычно градиент не вычисляем
+                    // Но если нужно: dL/dscalar = sum(dL/dC * A)
                 }
                 break;
 
@@ -530,4 +577,12 @@ public class Tensor
     public static Tensor operator -(Tensor a) => a.Neg();
 
     public static Tensor operator -(Tensor a, Tensor b) => a.Subtract(b);
+
+    public static Tensor operator /(Tensor a, Tensor b) => a.Div(b);
+
+    public static Tensor operator /(Tensor a, double b) => a.DivScalar(b);
+
+    public static Tensor operator *(Tensor a, double b) => a.MulScalar(b);
+
+    public static Tensor operator *(double a, Tensor b) => b.MulScalar(a);
 }
