@@ -1,5 +1,6 @@
 ﻿using SharpLeNet.Core;
 using SharpLeNet.Core.Layers;
+using SharpLeNet.Core.Losses;
 
 namespace LeNetConsoleClient
 {
@@ -319,9 +320,52 @@ namespace LeNetConsoleClient
             Console.WriteLine($"dL/da: [{a.Grad?.Data[0]:F4}, {a.Grad?.Data[1]:F4}]");
         }
 
+        static void TestDivisionAndMSELoss()
+        {
+            Console.WriteLine("=== Тест деления и MSE Loss ===");
+
+            // Создаем простые тензоры
+            var predictions = new Tensor(new double[] { 1.0, 2.0, 3.0, 4.0 }, new int[] { 2, 2 }, requiresGrad: true);
+            var targets = new Tensor(new double[] { 0.5, 1.5, 2.5, 3.5 }, new int[] { 2, 2 });
+
+            Console.WriteLine($"Predictions: [{predictions[0, 0]}, {predictions[0, 1]}; {predictions[1, 0]}, {predictions[1, 1]}]");
+            Console.WriteLine($"Targets: [{targets[0, 0]}, {targets[0, 1]}; {targets[1, 0]}, {targets[1, 1]}]");
+
+            // Тест деления
+            var divResult = predictions / targets;
+            Console.WriteLine($"\nДеление predictions / targets:");
+            Console.WriteLine($"  [{divResult[0, 0]:F4}, {divResult[0, 1]:F4}; {divResult[1, 0]:F4}, {divResult[1, 1]:F4}]");
+
+            // Тест умножения на скаляр
+            var mulScalar = predictions * 2.5;
+            Console.WriteLine($"\nУмножение predictions * 2.5:");
+            Console.WriteLine($"  [{mulScalar[0, 0]:F4}, {mulScalar[0, 1]:F4}; {mulScalar[1, 0]:F4}, {mulScalar[1, 1]:F4}]");
+
+            // Тест MSE Loss
+            var mseLoss = new MSELoss();
+            var loss = mseLoss.Compute(predictions, targets);
+
+            Console.WriteLine($"\nMSE Loss: {loss.Data[0]:F6}");
+
+            // Проверка backward
+            loss.Backward();
+
+            Console.WriteLine("\nГрадиенты predictions после MSE:");
+            if (predictions.Grad != null)
+            {
+                Console.WriteLine($"  [{predictions.Grad[0, 0]:F6}, {predictions.Grad[0, 1]:F6}; " +
+                                 $"{predictions.Grad[1, 0]:F6}, {predictions.Grad[1, 1]:F6}]");
+
+                // Аналитически: dL/dp = 2*(p - t) / N
+                // N = 4, p-t = [0.5, 0.5, 0.5, 0.5]
+                // 2*(p-t)/N = [0.25, 0.25, 0.25, 0.25]
+                Console.WriteLine($"Ожидаемо: [0.250000, 0.250000; 0.250000, 0.250000]");
+            }
+        }
         static void Main()
         {
-            SimpleTest();
+            TestDivisionAndMSELoss();
+            //SimpleTest();
             //TestSimpleGradient();
             //TestLinearGradientsWithDebug();
             //TestLeNetLayers();
