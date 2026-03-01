@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLeNet.Core", "src\Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLeNet.Tests", "tests\SharpLeNet.Tests\SharpLeNet.Tests.csproj", "{7EB57699-4F0D-496C-BA6A-39E4254E09F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLeNet.Infrastructure", "src\SharpLeNet.Infrastructure\SharpLeNet.Infrastructure.csproj", "{558B3B90-CAA6-4B81-956B-EF57CE9B3A9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7EB57699-4F0D-496C-BA6A-39E4254E09F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EB57699-4F0D-496C-BA6A-39E4254E09F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EB57699-4F0D-496C-BA6A-39E4254E09F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{558B3B90-CAA6-4B81-956B-EF57CE9B3A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{558B3B90-CAA6-4B81-956B-EF57CE9B3A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{558B3B90-CAA6-4B81-956B-EF57CE9B3A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{558B3B90-CAA6-4B81-956B-EF57CE9B3A9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

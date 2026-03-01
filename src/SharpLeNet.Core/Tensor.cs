@@ -3,7 +3,7 @@
 /// <summary>
 /// Тензор
 /// </summary>
-public class Tensor
+public class Tensor : IDisposable
 {
     /// <summary>
     /// Основные данные
@@ -568,6 +568,37 @@ public class Tensor
             randomData[i] = rnd.NextDouble();
         }
         return new Tensor(randomData, shapes);
+    }
+
+    private bool _disposed = false;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                Data = null;
+                Shape = null;
+                Strides = null;
+                Grad?.Dispose();
+            }
+            else
+            {
+
+            }
+            _disposed = true;
+        }
+    }
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    ~Tensor()
+    {
+        Dispose(false);
     }
 
     public static Tensor operator +(Tensor a, Tensor b) => a.Add(b);
