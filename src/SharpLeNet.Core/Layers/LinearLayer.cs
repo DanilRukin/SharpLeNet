@@ -8,6 +8,10 @@ public class LinearLayer : Layer
     private readonly int _inputSize;
     private readonly int _outputSize;
 
+    public int InputSize => _outputSize;
+
+    public int OutputSize => _outputSize;
+
     /// <summary>
     /// Веса
     /// </summary>

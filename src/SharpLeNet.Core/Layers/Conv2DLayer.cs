@@ -17,6 +17,12 @@ public class Conv2DLayer : Layer
     private readonly int _stride;
     private readonly int _padding;
 
+    public int InputChannels => _inputChannels;
+    public int OutputChannels => _outputChannels;
+    public int KernelSize => _kernelSize;
+    public int Stride => _stride;
+    public int Padding => _padding;
+
     /// <summary>
     /// Ядра
     /// </summary>
