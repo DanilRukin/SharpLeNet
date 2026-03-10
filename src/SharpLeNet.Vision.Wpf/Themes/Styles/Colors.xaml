@@ -1,0 +1,46 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Charcoal Coal Colors -->
+    <Color x:Key="Coal950">#0f0f10</Color>
+    <Color x:Key="Coal900">#151516</Color>
+    <Color x:Key="Coal850">#1a1a1a</Color>
+    <Color x:Key="Coal800">#202022</Color>
+    <Color x:Key="Coal750">#242427</Color>
+    <Color x:Key="Coal700">#2a2a2a</Color>
+    <Color x:Key="Coal650">#303033</Color>
+    <Color x:Key="Coal600">#38383d</Color>
+
+    <!-- Gold Accents -->
+    <Color x:Key="Gold400">#ffd700</Color>
+    <Color x:Key="Gold500">#d4af37</Color>
+    <Color x:Key="Gold600">#b9952e</Color>
+
+    <!-- White with opacity -->
+    <Color x:Key="White5">#0DFFFFFF</Color>
+    <Color x:Key="White10">#1AFFFFFF</Color>
+    <Color x:Key="White15">#26FFFFFF</Color>
+    <Color x:Key="White20">#33FFFFFF</Color>
+    <Color x:Key="White30">#4DFFFFFF</Color>
+    <Color x:Key="White40">#66FFFFFF</Color>
+    <Color x:Key="White45">#73FFFFFF</Color>
+    <Color x:Key="White50">#80FFFFFF</Color>
+    <Color x:Key="White55">#8CFFFFFF</Color>
+    <Color x:Key="White60">#99FFFFFF</Color>
+    <Color x:Key="White70">#B3FFFFFF</Color>
+    <Color x:Key="White80">#CCFFFFFF</Color>
+    <Color x:Key="White90">#E6FFFFFF</Color>
+
+    <!-- Black with opacity -->
+    <Color x:Key="Black5">#0D000000</Color>
+    <Color x:Key="Black10">#1A000000</Color>
+    <Color x:Key="Black20">#33000000</Color>
+    <Color x:Key="Black30">#4D000000</Color>
+
+    <Color x:Key="ConvBlue">#60a5fa</Color>
+    <Color x:Key="PoolGreen">#6ee7b7</Color>
+    <Color x:Key="LinearOrange">#fdba74</Color>
+    <Color x:Key="ActivationPurple">#f0abfc</Color>
+    <Color x:Key="FlattenPink">#fda4af</Color>
+
+</ResourceDictionary>

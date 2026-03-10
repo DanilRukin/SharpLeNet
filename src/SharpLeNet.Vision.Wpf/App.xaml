@@ -1,0 +1,27 @@
+﻿<Application x:Class="SharpLeNet.Vision.Wpf.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SharpLeNet.Vision.Wpf"
+             StartupUri="Views/Windows/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Converters/Converter.xaml"/>
+                <!--<ResourceDictionary Source="/Themes/CharcoalGold.xaml"/>-->
+                <ResourceDictionary Source="/Themes/Styles/Colors.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/Brushes.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/Icons.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/WindowStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/TabStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/WorkspaceStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/LayerPaletteStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Глобальные стили по умолчанию -->
+            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
+            <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SharpLeNet.Vision.Wpf.Converters">
+    <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <local:DoubleToPercentageConverter x:Key="DoubleToPercentageConverter"/>
+    <local:LogLevelToColorConverter x:Key="LogLevelToColorConverter"/>
+    <local:StringToBadgeConverter x:Key="StringToBadgeConverter"/>
+    <local:StringToBrushConverter x:Key="StringToBrushConverter"/>
+    <local:StringToColorBrushConverter x:Key="StringToColorBrushConverter"/>
+    <local:MemoryToStringConverter x:Key="MemoryToStringConverter"/>
+    <local:FlopsToStringConverter x:Key="FlopsToStringConverter"/>
+    <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+</ResourceDictionary>

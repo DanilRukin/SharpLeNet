@@ -1,0 +1,259 @@
+﻿<UserControl x:Class="SharpLeNet.Vision.Wpf.Views.Controls.LayerPaletteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SharpLeNet.Vision.Wpf.Views.Controls"
+             xmlns:behav="clr-namespace:SharpLeNet.Vision.Wpf.Behaviors"
+             mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:SharpLeNet.Vision.Wpf.ViewModels"
+             d:DesignHeight="600" d:DesignWidth="220"
+             d:DataContext="{d:DesignInstance viewModels:LayerPaletteViewModel}">
+    <UserControl.Resources>
+    
+     <!--Стиль для заголовка секции--> 
+    
+    <Style x:Key="SectionHeaderStyle" TargetType="Border">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderLightBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="0,0,0,12"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+    </Style>
+
+    
+     <!--Стиль для кнопки слоя в палитре--> 
+    
+    <Style x:Key="LayerButtonStyle" TargetType="Button">
+        <Setter Property="Height" Value="64"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Effect" Value="{StaticResource SmallShadow}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Effect="{TemplateBinding Effect}">
+                        <Grid Margin="12,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            
+     <!--Icon with colored background--> 
+    
+                            <Border Grid.Column="0"
+                                    Width="40" Height="40"
+                                    Background="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=Button}, Converter={StaticResource StringToColorBrushConverter}, ConverterParameter=bg}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                <ContentControl Content="{TemplateBinding Tag}"
+                                              Width="20" Height="20"
+                                              Foreground="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=Button}, Converter={StaticResource StringToColorBrushConverter}, ConverterParameter=fg}"/>
+                            </Border>
+
+                            
+     <!--Layer info--> 
+    
+                            <StackPanel Grid.Column="1" Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Content}"
+                                         Foreground="White"
+                                         FontWeight="SemiBold"
+                                         FontSize="14"/>
+                                <TextBlock Text="{TemplateBinding ToolTip}"
+                                         Foreground="{StaticResource White60Brush}"
+                                         FontSize="11"/>
+                            </StackPanel>
+
+                            
+     <!--Badge--> 
+    
+                            <Border Grid.Column="2"
+                                    Background="{StaticResource Black20Brush}"
+                                    BorderBrush="{StaticResource BorderLightBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Padding="6,2">
+                                <TextBlock Text="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=Button}, Converter={StaticResource StringToBadgeConverter}}"
+                                         Foreground="{StaticResource White45Brush}"
+                                         FontFamily="Consolas"
+                                         FontSize="10"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource White10Brush}"/>
+                            <Setter Property="Effect" Value="{StaticResource GlowEffect}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource White15Brush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    
+     <!--Стиль для маленькой информационной карточки--> 
+    
+    <Style x:Key="InfoCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Black10Brush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderLightBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+
+    
+     <!--Иконки для слоев в виде Path--> 
+    
+    <Path x:Key="ConvIcon" Data="M4,4 L20,4 L20,20 L4,20 Z M8,8 L16,8 L16,16 L8,16 Z" 
+          Fill="{StaticResource ConvBlueBrush}" Stretch="Uniform"/>
+
+    <Path x:Key="PoolIcon" Data="M4,12 L12,4 L20,12 L12,20 Z" 
+          Fill="{StaticResource PoolGreenBrush}" Stretch="Uniform"/>
+
+    <Path x:Key="LinearIcon" Data="M4,4 L28,12 M4,20 L28,20 M4,12 L28,4" 
+          Stroke="{StaticResource LinearOrangeBrush}" StrokeThickness="2" Stretch="Uniform"/>
+
+    <Path x:Key="ActivationIcon" Data="M2,12 Q8,4 14,12 Q20,20 26,12" 
+          Stroke="{StaticResource ActivationPurpleBrush}" StrokeThickness="2" Stretch="Uniform"/>
+
+    <Path x:Key="FlattenIcon" Data="M4,4 L20,4 M4,12 L20,12 M4,20 L20,20 M24,4 L28,8 L24,12" 
+          Stroke="{StaticResource FlattenPinkBrush}" StrokeThickness="2" Stretch="Uniform"/>
+
+    <Path x:Key="DropoutIcon" Data="M4,4 C8,8 12,0 16,4 C20,8 24,0 28,4" 
+          Stroke="{StaticResource White70Brush}" StrokeThickness="2" Stretch="Uniform"/>
+
+    <Path x:Key="BatchNormIcon" Data="M4,4 L28,4 M4,12 L28,12 M4,20 L28,20" 
+          Stroke="{StaticResource GoldBrush}" StrokeThickness="2" Stretch="Uniform"/>
+
+</UserControl.Resources>
+
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+         <!--Header--> 
+        <RowDefinition Height="*"/>
+         <!--Layers list--> 
+        <RowDefinition Height="Auto"/>
+         <!--Info card--> 
+    </Grid.RowDefinitions>
+
+     <!--Header with title and action button--> 
+    <Border Grid.Row="0" Style="{StaticResource SectionHeaderStyle}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Палитра слоёв" 
+                           Foreground="White" 
+                           FontWeight="SemiBold" 
+                           FontSize="16"/>
+                <TextBlock Text="Перетащите блок на холст" 
+                           Foreground="{StaticResource White55Brush}" 
+                           FontSize="11"/>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Width="36" Height="36"
+                    Background="{StaticResource White5Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    ToolTip="Управление пользовательскими слоями"
+                    Command="{Binding ManageLayersCommand}">
+                <Path Data="M12 4 L12 20 M4 12 L20 12" 
+                      Stroke="{StaticResource GoldBrush}" 
+                      StrokeThickness="2"
+                      Width="16" Height="16"/>
+            </Button>
+        </Grid>
+    </Border>
+
+     <!--Scrollable list of layers--> 
+    <ScrollViewer Grid.Row="1" 
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  Margin="0,0,-12,0"
+                  Padding="0,0,12,0">
+        <ItemsControl ItemsSource="{Binding Items}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Margin="0,0,4,0"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding Name}"
+                            ToolTip="{Binding Subtitle}"
+                            Tag="{Binding}"
+                            Style="{StaticResource LayerButtonStyle}"
+                            Background="{Binding BackgroundGradient, Converter={StaticResource StringToBrushConverter}}"
+                            BorderBrush="{Binding BorderColor, Converter={StaticResource StringToBrushConverter}}"
+                            Foreground="{Binding Color, Converter={StaticResource StringToBrushConverter}}"
+                            Command="{Binding DataContext.LayerSelectedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            behav:DragDropBehavior.IsDragSource="True"
+                            behav:DragDropBehavior.DragData="{Binding}"
+                            behav:DragDropBehavior.DragFormat="LayerType"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+
+     <!--Info card with tips--> 
+    <Border Grid.Row="2" 
+            Style="{StaticResource InfoCardStyle}"
+            Margin="0,12,0,0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           Text="Подсказка" 
+                           Foreground="{StaticResource White60Brush}" 
+                           FontSize="11"
+                           FontWeight="Medium"/>
+
+                <Path Grid.Column="1"
+                      Data="M12 2 C6 2 2 6 2 12 C2 18 6 22 12 22 C18 22 22 18 22 12 C22 6 18 2 12 2 M12 8 L12 12 M12 16 L12.01 16"
+                      Stroke="{StaticResource GoldBrush}"
+                      StrokeThickness="1.5"
+                      Width="16" Height="16"/>
+            </Grid>
+
+            <TextBlock Grid.Row="1" 
+                       Text="Соединяйте блоки только при совместимых размерностях — подсветка покажет ошибки."
+                       Foreground="{StaticResource White80Brush}"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       Margin="0,8,0,0"
+                       LineHeight="16"/>
+        </Grid>
+    </Border>
+</Grid>
+</UserControl>

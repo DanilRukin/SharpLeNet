@@ -1,0 +1,99 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Solid Brushes - конвертируем Colors в Brushes -->
+    <SolidColorBrush x:Key="Coal950Brush" Color="{StaticResource Coal950}"/>
+    <SolidColorBrush x:Key="Coal900Brush" Color="{StaticResource Coal900}"/>
+    <SolidColorBrush x:Key="Coal850Brush" Color="{StaticResource Coal850}"/>
+    <SolidColorBrush x:Key="Coal800Brush" Color="{StaticResource Coal800}"/>
+    <SolidColorBrush x:Key="Coal750Brush" Color="{StaticResource Coal750}"/>
+    <SolidColorBrush x:Key="Coal700Brush" Color="{StaticResource Coal700}"/>
+
+    <SolidColorBrush x:Key="GoldBrush" Color="{StaticResource Gold400}"/>
+    <SolidColorBrush x:Key="GoldDarkBrush" Color="{StaticResource Gold500}"/>
+
+    <!-- Layer Color Brushes -->
+    <SolidColorBrush x:Key="ConvBlue" Color="{StaticResource ConvBlue}"/>
+    <SolidColorBrush x:Key="PoolGreen" Color="{StaticResource PoolGreen}"/>
+    <SolidColorBrush x:Key="LinearOrange" Color="{StaticResource LinearOrange}"/>
+    <SolidColorBrush x:Key="ActivationPurple" Color="{StaticResource ActivationPurple}"/>
+    <SolidColorBrush x:Key="FlattenPink" Color="{StaticResource FlattenPink}"/>
+
+    <!-- White Brushes -->
+    <SolidColorBrush x:Key="White5Brush" Color="{StaticResource White5}"/>
+    <SolidColorBrush x:Key="White10Brush" Color="{StaticResource White10}"/>
+    <SolidColorBrush x:Key="White15Brush" Color="{StaticResource White15}"/>
+    <SolidColorBrush x:Key="White20Brush" Color="{StaticResource White20}"/>
+    <SolidColorBrush x:Key="White30Brush" Color="{StaticResource White30}"/>
+    <SolidColorBrush x:Key="White40Brush" Color="{StaticResource White40}"/>
+    <SolidColorBrush x:Key="White45Brush" Color="{StaticResource White45}"/>
+    <SolidColorBrush x:Key="White50Brush" Color="{StaticResource White50}"/>
+    <SolidColorBrush x:Key="White55Brush" Color="{StaticResource White55}"/>
+    <SolidColorBrush x:Key="White60Brush" Color="{StaticResource White60}"/>
+    <SolidColorBrush x:Key="White70Brush" Color="{StaticResource White70}"/>
+    <SolidColorBrush x:Key="White80Brush" Color="{StaticResource White80}"/>
+    <SolidColorBrush x:Key="White90Brush" Color="{StaticResource White90}"/>
+
+    <!-- Black Brushes -->
+    <SolidColorBrush x:Key="Black5Brush" Color="{StaticResource Black5}"/>
+    <SolidColorBrush x:Key="Black10Brush" Color="{StaticResource Black10}"/>
+    <SolidColorBrush x:Key="Black20Brush" Color="{StaticResource Black20}"/>
+    <SolidColorBrush x:Key="Black30Brush" Color="{StaticResource Black30}"/>
+
+    <!-- Border Brushes -->
+    <SolidColorBrush x:Key="BorderLightBrush" Color="{StaticResource White10}"/>
+    <SolidColorBrush x:Key="BorderMediumBrush" Color="{StaticResource White20}"/>
+
+    <!-- Gradient Backgrounds -->
+    <LinearGradientBrush x:Key="MainBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Coal850}" Offset="0"/>
+        <GradientStop Color="{StaticResource Coal700}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PanelBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Coal800}" Offset="0"/>
+        <GradientStop Color="{StaticResource Coal850}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PanelHeaderBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Coal750}" Offset="0"/>
+        <GradientStop Color="{StaticResource Coal800}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="GoldGradientBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource Gold400}" Offset="0"/>
+        <GradientStop Color="{StaticResource Gold500}" Offset="0.5"/>
+        <GradientStop Color="{StaticResource Gold400}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Layer Gradients -->
+    <LinearGradientBrush x:Key="ConvGradientBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#0b1a2a" Offset="0"/>
+        <GradientStop Color="#081624" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PoolGradientBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#071f16" Offset="0"/>
+        <GradientStop Color="#061a12" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Effects -->
+    <DropShadowEffect x:Key="BlockShadow" 
+                      BlurRadius="30" 
+                      Opacity="0.45" 
+                      ShadowDepth="10"
+                      Color="Black"/>
+
+    <DropShadowEffect x:Key="SmallShadow" 
+                      BlurRadius="10" 
+                      Opacity="0.25" 
+                      ShadowDepth="4"
+                      Color="Black"/>
+
+    <DropShadowEffect x:Key="GlowEffect" 
+                      BlurRadius="15" 
+                      Opacity="0.3" 
+                      ShadowDepth="0"
+                      Color="{StaticResource Gold400}"/>
+
+</ResourceDictionary>
