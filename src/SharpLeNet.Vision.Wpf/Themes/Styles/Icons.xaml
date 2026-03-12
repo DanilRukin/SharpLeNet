@@ -11,4 +11,46 @@
             <RotateTransform x:Name="RefreshRotate" Angle="0"/>
         </Path.RenderTransform>
     </Path>
+
+    <!-- ConvIcon - сверточный слой -->
+    <Geometry x:Key="ConvIconGeometry">M4,4 L20,4 L20,20 L4,20 Z M8,8 L16,8 L16,16 L8,16 Z</Geometry>
+    <PathGeometry x:Key="ConvIcon" Figures="M4,4 L20,4 L20,20 L4,20 Z M8,8 L16,8 L16,16 L8,16 Z"/>
+
+    <!-- PoolIcon - пулинг -->
+    <Geometry x:Key="PoolIconGeometry">M4,12 L12,4 L20,12 L12,20 Z</Geometry>
+    <PathGeometry x:Key="PoolIcon" Figures="M4,12 L12,4 L20,12 L12,20 Z"/>
+
+    <!-- LinearIcon - полносвязный слой -->
+    <Geometry x:Key="LinearIconGeometry">M4,4 L28,12 M4,20 L28,20 M4,12 L28,4</Geometry>
+    <PathGeometry x:Key="LinearIcon" Figures="M4,4 L28,12 M4,20 L28,20 M4,12 L28,4"/>
+
+    <!-- ActivationIcon - функция активации -->
+    <Geometry x:Key="ActivationIconGeometry">M2,12 Q8,4 14,12 Q20,20 26,12</Geometry>
+    <PathGeometry x:Key="ActivationIcon" Figures="M2,12 Q8,4 14,12 Q20,20 26,12"/>
+
+    <!-- FlattenIcon - сведение тензора -->
+    <Geometry x:Key="FlattenIconGeometry">M4,4 L20,4 M4,12 L20,12 M4,20 L20,20 M24,4 L28,8 L24,12</Geometry>
+    <PathGeometry x:Key="FlattenIcon" Figures="M4,4 L20,4 M4,12 L20,12 M4,20 L20,20 M24,4 L28,8 L24,12"/>
+
+    <!-- ImageIcon - входное изображение -->
+    <Geometry x:Key="ImageIconGeometry">M4,4 L28,4 L28,28 L4,28 Z M8,8 L24,8 L24,24 L8,24 Z M16,12 L20,16 L16,20 L12,16 Z</Geometry>
+    <PathGeometry x:Key="ImageIcon" Figures="M4,4 L28,4 L28,28 L4,28 Z M8,8 L24,8 L24,24 L8,24 Z M16,12 L20,16 L16,20 L12,16 Z"/>
+
+    <!-- DropoutIcon - dropout слой -->
+    <Geometry x:Key="DropoutIconGeometry">M4,4 C8,8 12,0 16,4 C20,8 24,0 28,4</Geometry>
+    <PathGeometry x:Key="DropoutIcon" Figures="M4,4 C8,8 12,0 16,4 C20,8 24,0 28,4"/>
+
+    <!-- BatchNormIcon - батч-нормализация -->
+    <Geometry x:Key="BatchNormIconGeometry">M4,4 L28,4 M4,12 L28,12 M4,20 L28,20</Geometry>
+    <PathGeometry x:Key="BatchNormIcon" Figures="M4,4 L28,4 M4,12 L28,12 M4,20 L28,20"/>
+
+    <!-- Дополнительные иконки -->
+    <Geometry x:Key="PlusIconGeometry">M12,4 L12,20 M4,12 L20,12</Geometry>
+    <PathGeometry x:Key="PlusIcon" Figures="M12,4 L12,20 M4,12 L20,12"/>
+
+    <Geometry x:Key="SettingsIconGeometry">M12,2 L12,6 M12,18 L12,22 M4,12 L2,12 M22,12 L20,12 M6,6 L4,4 M18,18 L20,20 M6,18 L4,20 M18,6 L20,4 M8,12 C8,10 10,8 12,8 C14,8 16,10 16,12 C16,14 14,16 12,16 C10,16 8,14 8,12</Geometry>
+    <PathGeometry x:Key="SettingsIcon" Figures="M12,2 L12,6 M12,18 L12,22 M4,12 L2,12 M22,12 L20,12 M6,6 L4,4 M18,18 L20,20 M6,18 L4,20 M18,6 L20,4 M8,12 C8,10 10,8 12,8 C14,8 16,10 16,12 C16,14 14,16 12,16 C10,16 8,14 8,12"/>
+
+    <Geometry x:Key="ZapIconGeometry">M13,2 L4,14 L12,14 L11,22 L20,10 L12,10 L13,2</Geometry>
+    <PathGeometry x:Key="ZapIcon" Figures="M13,2 L4,14 L12,14 L11,22 L20,10 L12,10 L13,2"/>
 </ResourceDictionary>

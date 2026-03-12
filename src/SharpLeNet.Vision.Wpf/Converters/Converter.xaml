@@ -10,4 +10,8 @@
     <local:MemoryToStringConverter x:Key="MemoryToStringConverter"/>
     <local:FlopsToStringConverter x:Key="FlopsToStringConverter"/>
     <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    <local:StringToGradientConverter x:Key="StringToGradientConverter"/>
+    <local:ConnectionPointConverter x:Key="ConnectionPointConverter"/>
+    <local:PositionConverter x:Key="PositionConverter"/>
+    <local:BoolToEffectConverter x:Key="BoolToEffectConverter"/>
 </ResourceDictionary>

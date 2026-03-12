@@ -16,6 +16,8 @@
                 <ResourceDictionary Source="/Themes/Styles/TabStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/WorkspaceStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/LayerPaletteStyles.xaml"/>
+
+                <ResourceDictionary Source="/Converters/ConvertersAfterStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Глобальные стили по умолчанию -->

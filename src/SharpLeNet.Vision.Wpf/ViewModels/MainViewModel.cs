@@ -93,20 +93,20 @@ public class MainViewModel : BaseViewModel
     {
         IsTraining = true;
         Training.StartTraining();
-        StatusBar.UpdateTrainingStatus("Training", 0, 0);
+        StatusBar.UpdateTrainingStatus(Training.CurrentEpoch, Training.CurrentBatch, Training.CurrentLoss, Training.LearningRate, Training.Eta);
     }
 
     private void PauseTraining(object? parameter)
     {
         Training.PauseTraining();
-        StatusBar.UpdateTrainingStatus("Paused", 0, 0);
+        StatusBar.UpdateTrainingStatus(Training.CurrentEpoch, Training.CurrentBatch, Training.CurrentLoss, Training.LearningRate, Training.Eta);
     }
 
     private void StopTraining(object? parameter)
     {
         IsTraining = false;
         Training.StopTraining();
-        StatusBar.UpdateTrainingStatus("Stopped", 0, 0);
+        StatusBar.UpdateTrainingStatus(Training.CurrentEpoch, Training.CurrentBatch, Training.CurrentLoss, Training.LearningRate, Training.Eta);
     }
 
     private void QuickStart(object? parameter)
