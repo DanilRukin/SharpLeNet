@@ -74,15 +74,61 @@
                                 <RadioButton Content="{Binding Name}"
                                            IsChecked="{Binding IsActive}"
                                            Style="{StaticResource TabItemStyle}"
-                                           GroupName="MainTabs"/>
+                                           GroupName="MainTabs"
+                                           Command="{Binding DataContext.NavigateToTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                           CommandParameter="{Binding}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Border>
 
-                <!-- Canvas with Connections -->
-                <controls:ArchitectureCanvas Grid.Row="1" DataContext="{Binding Architecture}"
-                        Style="{StaticResource ArchitectureCanvasStyle}"/>
+                <ContentControl Grid.Row="1" 
+                    Content="{Binding SelectedTab}"
+                    Margin="0">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:ArchitectureViewModel}">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto"
+                            Background="Transparent">
+                                <controls:ArchitectureCanvas DataContext="{Binding}"
+                                                Width="2000" 
+                                                Height="1500"/>
+                            </ScrollViewer>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type viewModels:TrainingViewModel}">
+                            <controls:TrainingView DataContext="{Binding}"/>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type viewModels:AnalysisViewModel}">
+                            <Border Background="{StaticResource Coal800Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="16"
+                        Margin="24">
+                                <TextBlock Text="Analysis Tab - Coming Soon" 
+                              Foreground="{StaticResource White60Brush}"
+                              FontSize="24"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type viewModels:PlaygroundViewModel}">
+                            <Border Background="{StaticResource Coal800Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="16"
+                        Margin="24">
+                                <TextBlock Text="Playground Tab - Coming Soon" 
+                              Foreground="{StaticResource White60Brush}"
+                              FontSize="24"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
             </Grid>
 
             <GridSplitter Grid.Column="3" 

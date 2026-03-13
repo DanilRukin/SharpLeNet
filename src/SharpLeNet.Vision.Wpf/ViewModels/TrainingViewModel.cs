@@ -8,60 +8,45 @@ namespace SharpLeNet.Vision.Wpf.ViewModels;
 
 public class TrainingViewModel : BaseViewModel
 {
-    private readonly System.Timers.Timer _updateTimer;
     private bool _isTraining;
     private bool _isPaused;
-    private int _currentEpoch;
+    private int _currentEpoch = 4;
     private int _totalEpochs = 15;
-    private int _currentBatch;
+    private int _currentBatch = 128;
     private int _totalBatches = 469;
     private double _currentLoss = 0.284;
-    private double _bestLoss = 0.251;
-    private double _currentAccuracy = 98.1;
-    private double _bestAccuracy = 98.4;
+    private double _validationLoss = 0.312;
+    private double _currentAccuracy = 98.11;
+    private double _validationAccuracy = 96.45;
     private double _learningRate = 0.001;
     private TimeSpan _eta = TimeSpan.FromMinutes(12).Add(TimeSpan.FromSeconds(48));
-    private string _selectedMetric = "Loss";
-    private ConfusionMatrixViewModel _confusionMatrix;
+    private string _status = "Running";
+    private string _scheduleType = "Exponential";
+    private ObservableCollection<EpochRecord> _epochHistory;
 
     public TrainingViewModel()
     {
-        // Инициализация коллекций
-        LossHistory = new ObservableCollection<DataPoint>();
-        AccuracyHistory = new ObservableCollection<DataPoint>();
-        AvailableMetrics = new ObservableCollection<string> { "Loss", "Accuracy", "LR" };
-
-        // Инициализация confusion matrix
-        _confusionMatrix = new ConfusionMatrixViewModel(10); // 10 классов для MNIST
-
-        // Команды
+        // Инициализация команд
         StartCommand = new RelayCommand(Start, (_) => !IsTraining && !IsPaused);
         PauseCommand = new RelayCommand(Pause, (_) => IsTraining && !IsPaused);
         ResumeCommand = new RelayCommand(Resume, (_) => IsPaused);
         StopCommand = new RelayCommand(Stop, (_) => IsTraining || IsPaused);
-        ExportMetricsCommand = new RelayCommand(ExportMetrics);
-        ClearHistoryCommand = new RelayCommand(ClearHistory);
+        RefreshCommand = new RelayCommand(Refresh);
 
-        // Таймер для симуляции обновлений (в реальном приложении будет подключен к Trainer)
-        _updateTimer = new System.Timers.Timer(1000);
-        _updateTimer.Elapsed += OnUpdateTimerElapsed;
-
-        // Загружаем демо-данные
-        LoadDemoData();
+        // Инициализация данных
+        InitializeEpochHistory();
+        InitializeGraphData();
+        InitializeConfusionMatrix();
     }
 
-    // Коллекции
-    public ObservableCollection<DataPoint> LossHistory { get; }
-    public ObservableCollection<DataPoint> AccuracyHistory { get; }
-    public ObservableCollection<string> AvailableMetrics { get; }
+    // Команды
+    public ICommand StartCommand { get; }
+    public ICommand PauseCommand { get; }
+    public ICommand ResumeCommand { get; }
+    public ICommand StopCommand { get; }
+    public ICommand RefreshCommand { get; }
 
-    public ConfusionMatrixViewModel ConfusionMatrix
-    {
-        get => _confusionMatrix;
-        set => SetProperty(ref _confusionMatrix, value);
-    }
-
-    // Свойства состояния
+    // Состояние обучения
     public bool IsTraining
     {
         get => _isTraining;
@@ -74,16 +59,20 @@ public class TrainingViewModel : BaseViewModel
         private set => SetProperty(ref _isPaused, value);
     }
 
+    public string Status
+    {
+        get => _status;
+        set => SetProperty(ref _status, value);
+    }
+
+    // Параметры обучения
     public int CurrentEpoch
     {
         get => _currentEpoch;
         set
         {
             if (SetProperty(ref _currentEpoch, value))
-            {
-                OnPropertyChanged(nameof(EpochProgress));
                 OnPropertyChanged(nameof(EpochDisplay));
-            }
         }
     }
 
@@ -93,14 +82,10 @@ public class TrainingViewModel : BaseViewModel
         set
         {
             if (SetProperty(ref _totalEpochs, value))
-            {
-                OnPropertyChanged(nameof(EpochProgress));
                 OnPropertyChanged(nameof(EpochDisplay));
-            }
         }
     }
 
-    public double EpochProgress => (double)CurrentEpoch / TotalEpochs * 100;
     public string EpochDisplay => $"{CurrentEpoch:D2}/{TotalEpochs:D2}";
 
     public int CurrentBatch
@@ -110,8 +95,8 @@ public class TrainingViewModel : BaseViewModel
         {
             if (SetProperty(ref _currentBatch, value))
             {
-                OnPropertyChanged(nameof(BatchProgress));
                 OnPropertyChanged(nameof(BatchDisplay));
+                OnPropertyChanged(nameof(BatchProgress));
             }
         }
     }
@@ -123,14 +108,14 @@ public class TrainingViewModel : BaseViewModel
         {
             if (SetProperty(ref _totalBatches, value))
             {
-                OnPropertyChanged(nameof(BatchProgress));
                 OnPropertyChanged(nameof(BatchDisplay));
+                OnPropertyChanged(nameof(BatchProgress));
             }
         }
     }
 
-    public double BatchProgress => (double)CurrentBatch / TotalBatches * 100;
     public string BatchDisplay => $"{CurrentBatch}/{TotalBatches}";
+    public double BatchProgress => (double)CurrentBatch / TotalBatches * 100;
 
     public double CurrentLoss
     {
@@ -138,19 +123,23 @@ public class TrainingViewModel : BaseViewModel
         set
         {
             if (SetProperty(ref _currentLoss, value))
-            {
-                OnPropertyChanged(nameof(LossDisplay));
-            }
+                OnPropertyChanged(nameof(CurrentLossDisplay));
         }
     }
 
-    public string LossDisplay => _currentLoss.ToString("F3");
+    public string CurrentLossDisplay => _currentLoss.ToString("F3");
 
-    public double BestLoss
+    public double ValidationLoss
     {
-        get => _bestLoss;
-        set => SetProperty(ref _bestLoss, value);
+        get => _validationLoss;
+        set
+        {
+            if (SetProperty(ref _validationLoss, value))
+                OnPropertyChanged(nameof(ValidationLossDisplay));
+        }
     }
+
+    public string ValidationLossDisplay => _validationLoss.ToString("F3");
 
     public double CurrentAccuracy
     {
@@ -158,19 +147,23 @@ public class TrainingViewModel : BaseViewModel
         set
         {
             if (SetProperty(ref _currentAccuracy, value))
-            {
-                OnPropertyChanged(nameof(AccuracyDisplay));
-            }
+                OnPropertyChanged(nameof(CurrentAccuracyDisplay));
         }
     }
 
-    public string AccuracyDisplay => _currentAccuracy.ToString("F1") + "%";
+    public string CurrentAccuracyDisplay => _currentAccuracy.ToString("F2") + "%";
 
-    public double BestAccuracy
+    public double ValidationAccuracy
     {
-        get => _bestAccuracy;
-        set => SetProperty(ref _bestAccuracy, value);
+        get => _validationAccuracy;
+        set
+        {
+            if (SetProperty(ref _validationAccuracy, value))
+                OnPropertyChanged(nameof(ValidationAccuracyDisplay));
+        }
     }
+
+    public string ValidationAccuracyDisplay => _validationAccuracy.ToString("F2") + "%";
 
     public double LearningRate
     {
@@ -178,13 +171,11 @@ public class TrainingViewModel : BaseViewModel
         set
         {
             if (SetProperty(ref _learningRate, value))
-            {
                 OnPropertyChanged(nameof(LearningRateDisplay));
-            }
         }
     }
 
-    public string LearningRateDisplay => _learningRate.ToString("E2");
+    public string LearningRateDisplay => _learningRate.ToString("e2");
 
     public TimeSpan Eta
     {
@@ -192,156 +183,109 @@ public class TrainingViewModel : BaseViewModel
         set
         {
             if (SetProperty(ref _eta, value))
-            {
                 OnPropertyChanged(nameof(EtaDisplay));
-            }
         }
     }
 
     public string EtaDisplay => _eta.ToString(@"hh\:mm\:ss");
 
-    public string SelectedMetric
+    public string ScheduleType
     {
-        get => _selectedMetric;
-        set
-        {
-            if (SetProperty(ref _selectedMetric, value))
-            {
-                OnPropertyChanged(nameof(SelectedMetricData));
-            }
-        }
+        get => _scheduleType;
+        set => SetProperty(ref _scheduleType, value);
     }
 
-    public ObservableCollection<DataPoint> SelectedMetricData
-    {
-        get
-        {
-            return SelectedMetric switch
-            {
-                "Loss" => LossHistory,
-                "Accuracy" => AccuracyHistory,
-                _ => LossHistory
-            };
-        }
-    }
+    public ObservableCollection<EpochRecord> EpochHistory => _epochHistory;
 
-    // Команды
-    public ICommand StartCommand { get; }
-    public ICommand PauseCommand { get; }
-    public ICommand ResumeCommand { get; }
-    public ICommand StopCommand { get; }
-    public ICommand ExportMetricsCommand { get; }
-    public ICommand ClearHistoryCommand { get; }
+    // Данные для графиков
+    public ObservableCollection<DataPoint> TrainLossPoints { get; private set; }
+    public ObservableCollection<DataPoint> ValLossPoints { get; private set; }
+    public ObservableCollection<DataPoint> TrainAccPoints { get; private set; }
+    public ObservableCollection<DataPoint> ValAccPoints { get; private set; }
+
+    // Confusion Matrix
+    public ConfusionMatrixViewModel ConfusionMatrix { get; private set; }
 
     // Методы команд
     private void Start(object? parameter)
     {
         IsTraining = true;
         IsPaused = false;
-        _updateTimer.Start();
+        Status = "Running";
     }
 
     private void Pause(object? parameter)
     {
         IsPaused = true;
-        _updateTimer.Stop();
+        Status = "Paused";
     }
 
     private void Resume(object? parameter)
     {
         IsPaused = false;
-        _updateTimer.Start();
+        Status = "Running";
     }
 
     private void Stop(object? parameter)
     {
         IsTraining = false;
         IsPaused = false;
-        _updateTimer.Stop();
-        CurrentEpoch = 0;
-        CurrentBatch = 0;
+        Status = "Stopped";
     }
 
-    private void ExportMetrics(object? parameter)
+    private void Refresh(object? parameter)
     {
-        // Логика экспорта метрик в CSV/JSON
+        // Обновление данных
     }
 
-    private void ClearHistory(object? parameter)
+    private void InitializeEpochHistory()
     {
-        LossHistory.Clear();
-        AccuracyHistory.Clear();
-    }
-
-    // Публичные методы для управления извне
-    public void StartTraining()
-    {
-        Start(null);
-    }
-
-    public void PauseTraining()
-    {
-        Pause(null);
-    }
-
-    public void StopTraining()
-    {
-        Stop(null);
-    }
-
-    public void UpdateMetrics(double loss, double accuracy, int epoch, int batch)
-    {
-        CurrentLoss = loss;
-        CurrentAccuracy = accuracy;
-        CurrentEpoch = epoch;
-        CurrentBatch = batch;
-
-        LossHistory.Add(new DataPoint(epoch + (double)batch / TotalBatches, loss));
-        AccuracyHistory.Add(new DataPoint(epoch + (double)batch / TotalBatches, accuracy));
-
-        // Обновляем ETA
-        if (epoch > 0 || batch > 0)
-        {
-            var progress = (epoch * TotalBatches + batch) / (double)(TotalEpochs * TotalBatches);
-            if (progress > 0)
+        _epochHistory = new ObservableCollection<EpochRecord>
             {
-                var elapsed = TimeSpan.FromSeconds(DateTime.Now.TimeOfDay.TotalSeconds); // В реальном приложении нужно хранить время старта
-                Eta = TimeSpan.FromSeconds(elapsed.TotalSeconds / progress - elapsed.TotalSeconds);
-            }
-        }
+                new EpochRecord { Epoch = 4, TrainLoss = 0.2842, ValLoss = 0.3120, TrainAcc = 98.42, ValAcc = 98.11, Time = "02:14", LearningRate = 1.00e-3 },
+                new EpochRecord { Epoch = 3, TrainLoss = 0.3421, ValLoss = 0.3892, TrainAcc = 97.21, ValAcc = 96.45, Time = "02:12", LearningRate = 1.05e-3 },
+                new EpochRecord { Epoch = 2, TrainLoss = 0.4890, ValLoss = 0.5122, TrainAcc = 94.10, ValAcc = 93.20, Time = "02:15", LearningRate = 1.10e-3 },
+                new EpochRecord { Epoch = 1, TrainLoss = 0.7241, ValLoss = 0.7812, TrainAcc = 88.42, ValAcc = 87.12, Time = "02:20", LearningRate = 1.20e-3 },
+                new EpochRecord { Epoch = 0, TrainLoss = 1.2402, ValLoss = 1.3204, TrainAcc = 72.15, ValAcc = 68.42, Time = "02:25", LearningRate = 1.30e-3 }
+            };
     }
 
-    private void OnUpdateTimerElapsed(object? sender, ElapsedEventArgs e)
+    private void InitializeGraphData()
     {
-        // Симуляция обновлений для демо
-        if (!IsTraining || IsPaused) return;
+        TrainLossPoints = new ObservableCollection<DataPoint>();
+        ValLossPoints = new ObservableCollection<DataPoint>();
+        TrainAccPoints = new ObservableCollection<DataPoint>();
+        ValAccPoints = new ObservableCollection<DataPoint>();
 
-        // Генерируем случайные данные для демонстрации
-        var random = new Random();
-        var newLoss = Math.Max(0.05, CurrentLoss * 0.99 + random.NextDouble() * 0.01 - 0.005);
-        var newAccuracy = Math.Min(99.5, CurrentAccuracy * 1.001 + random.NextDouble() * 0.1 - 0.05);
+        // Добавляем точки для графика лосса
+        TrainLossPoints.Add(new DataPoint(0, 1.24));
+        TrainLossPoints.Add(new DataPoint(1, 0.72));
+        TrainLossPoints.Add(new DataPoint(2, 0.49));
+        TrainLossPoints.Add(new DataPoint(3, 0.34));
+        TrainLossPoints.Add(new DataPoint(4, 0.28));
 
-        CurrentBatch++;
-        if (CurrentBatch > TotalBatches)
-        {
-            CurrentBatch = 1;
-            CurrentEpoch++;
-        }
+        ValLossPoints.Add(new DataPoint(0, 1.32));
+        ValLossPoints.Add(new DataPoint(1, 0.78));
+        ValLossPoints.Add(new DataPoint(2, 0.51));
+        ValLossPoints.Add(new DataPoint(3, 0.39));
+        ValLossPoints.Add(new DataPoint(4, 0.31));
 
-        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-        {
-            UpdateMetrics(newLoss, newAccuracy, CurrentEpoch, CurrentBatch);
-        });
+        // Добавляем точки для графика точности
+        TrainAccPoints.Add(new DataPoint(0, 72.15));
+        TrainAccPoints.Add(new DataPoint(1, 88.42));
+        TrainAccPoints.Add(new DataPoint(2, 94.10));
+        TrainAccPoints.Add(new DataPoint(3, 97.21));
+        TrainAccPoints.Add(new DataPoint(4, 98.42));
+
+        ValAccPoints.Add(new DataPoint(0, 68.42));
+        ValAccPoints.Add(new DataPoint(1, 87.12));
+        ValAccPoints.Add(new DataPoint(2, 93.20));
+        ValAccPoints.Add(new DataPoint(3, 96.45));
+        ValAccPoints.Add(new DataPoint(4, 98.11));
     }
 
-    private void LoadDemoData()
+    private void InitializeConfusionMatrix()
     {
-        // Загружаем демо-данные для графиков
-        for (int i = 0; i < 50; i++)
-        {
-            var x = i * 0.1;
-            LossHistory.Add(new DataPoint(x, 1.0 / (1 + x) + Math.Sin(x) * 0.1));
-            AccuracyHistory.Add(new DataPoint(x, 100 - 50 / (1 + x) + Math.Cos(x) * 2));
-        }
+        ConfusionMatrix = new ConfusionMatrixViewModel(10);
     }
 }

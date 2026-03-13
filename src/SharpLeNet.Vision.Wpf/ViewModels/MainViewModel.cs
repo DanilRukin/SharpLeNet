@@ -35,12 +35,15 @@ public class MainViewModel : BaseViewModel
                 new TabViewModel("Playground", typeof(PlaygroundViewModel), false)
             };
 
+        SelectedTab = Training;
+
         // Команды
         StartTrainingCommand = new RelayCommand(StartTraining, (_) => !IsTraining);
         PauseTrainingCommand = new RelayCommand(PauseTraining, (_) => IsTraining);
         StopTrainingCommand = new RelayCommand(StopTraining, (_) => IsTraining);
         QuickStartCommand = new RelayCommand(QuickStart);
         ToggleSidebarCommand = new RelayCommand(ToggleSidebar);
+        NavigateToTabCommand = new RelayCommand<TabViewModel>(NavigateToTab);
     }
 
     // Properties
@@ -88,24 +91,49 @@ public class MainViewModel : BaseViewModel
     public ICommand StopTrainingCommand { get; }
     public ICommand QuickStartCommand { get; }
     public ICommand ToggleSidebarCommand { get; }
+    public ICommand NavigateToTabCommand { get; }
+
+    private void NavigateToTab(TabViewModel? tab)
+    {
+        if (tab == null) return;
+
+        // Снимаем активность со всех табов
+        foreach (var t in Tabs)
+        {
+            t.IsActive = false;
+        }
+
+        // Активируем выбранный таб
+        tab.IsActive = true;
+
+        // Устанавливаем соответствующий ViewModel
+        if (tab.ViewModelType == typeof(ArchitectureViewModel))
+            SelectedTab = Architecture;
+        else if (tab.ViewModelType == typeof(TrainingViewModel))
+            SelectedTab = Training;
+        //else if (tab.ViewModelType == typeof(AnalysisViewModel))
+        //    SelectedTab = Analysis;
+        //else if (tab.ViewModelType == typeof(PlaygroundViewModel))
+        //    SelectedTab = Playground;
+    }
 
     private void StartTraining(object? parameter)
     {
         IsTraining = true;
-        Training.StartTraining();
+        Training.StartCommand.Execute(parameter);
         StatusBar.UpdateTrainingStatus(Training.CurrentEpoch, Training.CurrentBatch, Training.CurrentLoss, Training.LearningRate, Training.Eta);
     }
 
     private void PauseTraining(object? parameter)
     {
-        Training.PauseTraining();
+        Training.PauseCommand.Execute(parameter);
         StatusBar.UpdateTrainingStatus(Training.CurrentEpoch, Training.CurrentBatch, Training.CurrentLoss, Training.LearningRate, Training.Eta);
     }
 
     private void StopTraining(object? parameter)
     {
         IsTraining = false;
-        Training.StopTraining();
+        Training.StopCommand.Execute(parameter);
         StatusBar.UpdateTrainingStatus(Training.CurrentEpoch, Training.CurrentBatch, Training.CurrentLoss, Training.LearningRate, Training.Eta);
     }
 

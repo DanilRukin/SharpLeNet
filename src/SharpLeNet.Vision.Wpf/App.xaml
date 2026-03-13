@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="/Themes/Styles/Brushes.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/Icons.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/Styles/BorederStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/WindowStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/TabStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/Styles/WorkspaceStyles.xaml"/>

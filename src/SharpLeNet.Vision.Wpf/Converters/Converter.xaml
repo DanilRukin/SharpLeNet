@@ -14,4 +14,8 @@
     <local:ConnectionPointConverter x:Key="ConnectionPointConverter"/>
     <local:PositionConverter x:Key="PositionConverter"/>
     <local:BoolToEffectConverter x:Key="BoolToEffectConverter"/>
+    <local:BoolToStatusColorConverter x:Key="BoolToStatusColorConverter"/>
+    <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
+    <local:DataPointsToPointCollectionConverter x:Key="DataPointsToPointCollectionConverter"/>
+    <local:DoubleRangeConverter x:Key="DoubleRangeConverter"/>
 </ResourceDictionary>
