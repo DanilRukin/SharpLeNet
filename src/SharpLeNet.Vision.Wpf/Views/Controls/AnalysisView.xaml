@@ -1,0 +1,1060 @@
+﻿<UserControl x:Class="SharpLeNet.Vision.Wpf.Views.Controls.AnalysisView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SharpLeNet.Vision.Wpf.Views.Controls"
+             mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:SharpLeNet.Vision.Wpf.ViewModels"
+             d:DesignHeight="3000" d:DesignWidth="1000"
+             d:DataContext="{d:DesignInstance viewModels:AnalysisViewModel}"
+             Background="Transparent">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  Background="Transparent">
+        <StackPanel Margin="0,0,0,24">
+            <!-- Заголовок -->
+            <TextBlock Text="Analysis Dashboard"
+                       Foreground="White"
+                       FontSize="28"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,16"/>
+            <Rectangle Height="1"
+                       Fill="{StaticResource BorderLightBrush}"
+                       Margin="0, 0, 0, 24"/>
+
+
+            <!-- ========== СЕКЦИЯ 1: ПАНЕЛЬ УПРАВЛЕНИЯ АНАЛИЗОМ ========== -->
+            <Border Background="{StaticResource Coal800Brush}"
+        BorderBrush="{StaticResource BorderLightBrush}"
+        BorderThickness="1"
+        CornerRadius="16"
+        Padding="20"
+        Effect="{StaticResource PanelSoftShadow}"
+        Margin="0,0,0,24">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Выбор слоя -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Разделитель -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Режимы визуализации -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Кнопки управления -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Выбор слоя -->
+                    <StackPanel Grid.Column="0" MinWidth="200">
+                        <TextBlock Text="SELECTED LAYER" 
+                      Foreground="{StaticResource White40Brush}" 
+                      FontSize="10"
+                      FontWeight="Medium"
+                      Margin="0,0,0,8"/>
+
+                        <ComboBox ItemsSource="{Binding Layers}"
+                      SelectedItem="{Binding SelectedLayer}"
+                      Background="{StaticResource Coal900Brush}"
+                      BorderBrush="{StaticResource BorderLightBrush}"
+                      Foreground="White"
+                      Height="40"
+                      Padding="8,4">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Width="8" Height="8"
+                                    Fill="{Binding Color, Converter={StaticResource StringToBrushConverter}}"
+                                    Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Name}" Foreground="White"/>
+                                        <TextBlock Text=" - " Foreground="{StaticResource White40Brush}"/>
+                                        <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource White60Brush}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Разделитель -->
+                    <Rectangle Grid.Column="1" 
+                   Width="1" 
+                   Fill="{StaticResource BorderLightBrush}" 
+                   Margin="24,4"/>
+
+                    <!-- Режимы визуализации -->
+                    <StackPanel Grid.Column="2" Margin="24,0,0,0">
+                        <TextBlock Text="VISUALIZATION MODE" 
+                      Foreground="{StaticResource White40Brush}" 
+                      FontSize="10"
+                      FontWeight="Medium"
+                      Margin="0,0,0,8"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Activations Mode -->
+                            <RadioButton GroupName="VisualizationMode"
+                           IsChecked="{Binding IsActivationsMode, Mode=OneWay}"
+                           Style="{StaticResource TabItemStyle}"
+                           Margin="0,0,8,0">
+                                <StackPanel Orientation="Horizontal" Margin="12,6">
+                                    <Path Data="{StaticResource ActivationsIconGeometry}"
+                              Fill="{StaticResource GoldBrush}"
+                              Width="16" Height="16"
+                              Stretch="Uniform"
+                              Margin="0,0,8,0"/>
+                                    <TextBlock Text="Activations" Foreground="White"/>
+                                </StackPanel>
+                            </RadioButton>
+
+                            <!-- Filters Mode -->
+                            <RadioButton GroupName="VisualizationMode"
+                           IsChecked="{Binding IsFiltersMode, Mode=OneWay}"
+                           Style="{StaticResource TabItemStyle}"
+                           Margin="0,0,8,0">
+                                <StackPanel Orientation="Horizontal" Margin="12,6">
+                                    <Path Data="{StaticResource FiltersIconGeometry}"
+                              Stroke="{StaticResource GoldBrush}"
+                              StrokeThickness="2"
+                              Width="16" Height="16"
+                              Stretch="Uniform"
+                              Margin="0,0,8,0"/>
+                                    <TextBlock Text="Filters" Foreground="White"/>
+                                </StackPanel>
+                            </RadioButton>
+
+                            <!-- Grad-CAM Mode -->
+                            <RadioButton GroupName="VisualizationMode"
+                           IsChecked="{Binding IsGradCamMode, Mode=OneWay}"
+                           Style="{StaticResource TabItemStyle}">
+                                <StackPanel Orientation="Horizontal" Margin="12,6">
+                                    <Path Data="{StaticResource GradCamIconGeometry}"
+                              Stroke="{StaticResource GoldBrush}"
+                              StrokeThickness="2"
+                              Width="16" Height="16"
+                              Stretch="Uniform"
+                              Margin="0,0,8,0"/>
+                                    <TextBlock Text="Grad-CAM" Foreground="White"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Кнопки управления -->
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!-- Load Image -->
+                        <Button Command="{Binding LoadImageCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal" Margin="16,0">
+                                <Path Data="{StaticResource LoadImageIconGeometry}"
+                          Fill="{StaticResource GoldBrush}"
+                          Width="16" Height="16"
+                          Stretch="Uniform"
+                          Margin="0,0,8,0"/>
+                                <TextBlock Text="Load Image" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Analyze Button -->
+                        <Button Command="{Binding AnalyzeCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    IsEnabled="{Binding CanAnalyze}">
+                            <StackPanel Orientation="Horizontal" Margin="16,0">
+                                <Path Data="{StaticResource AnalyzeIconGeometry}"
+                          Fill="#141414"
+                          Width="16" Height="16"
+                          Stretch="Uniform"
+                          Margin="0,0,8,0"/>
+                                <TextBlock Text="Analyze" Foreground="#141414" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+
+            <!-- ========== СЕКЦИЯ 2: ПАНЕЛЬ ПРЕДПРОСМОТРА ИЗОБРАЖЕНИЯ ========== -->
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Original Image Panel -->
+                <Border Grid.Column="0"
+            Background="{StaticResource Coal800Brush}"
+            BorderBrush="{StaticResource BorderLightBrush}"
+            BorderThickness="1"
+            CornerRadius="16"
+            Padding="20"
+            Effect="{StaticResource PanelSoftShadow}">
+
+                    <StackPanel>
+                        <!-- Заголовок -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <Path Data="{StaticResource LoadImageIconGeometry}"
+                      Fill="{StaticResource GoldBrush}"
+                      Width="20" Height="20"
+                      Stretch="Uniform"
+                      Margin="0,0,8,0"/>
+                            <TextBlock Text="Original Image" 
+                          Foreground="White" 
+                          FontSize="16" 
+                          FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <!-- Image Preview Area -->
+                        <Border Background="{StaticResource Coal900Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Height="240"
+                    Margin="0,0,0,16">
+
+                            <Grid>
+                                <!-- Placeholder when no image -->
+                                <StackPanel Visibility="{Binding OriginalImagePath, Converter={StaticResource NullToVisibilityConverter}}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                    <Path Data="{StaticResource LoadImageIconGeometry}"
+                              Fill="{StaticResource White20Brush}"
+                              Width="48" Height="48"
+                              Stretch="Uniform"
+                              Margin="0,0,0,12"/>
+                                    <TextBlock Text="No image loaded" 
+                                  Foreground="{StaticResource White30Brush}" 
+                                  FontSize="14"/>
+                                    <TextBlock Text="Click 'Load Image' to select" 
+                                  Foreground="{StaticResource White20Brush}" 
+                                  FontSize="11"
+                                  HorizontalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Actual image (placeholder for now) -->
+                                <Border Visibility="{Binding OriginalImagePath, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                            Background="{StaticResource Coal950Brush}">
+                                    <Image Source="{Binding OriginalImagePath}" 
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Image Info -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="Dimensions:" 
+                              Foreground="{StaticResource White40Brush}" 
+                              FontSize="11"
+                              Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding ImageDimensions}" 
+                              Foreground="White" 
+                              FontSize="11"
+                              FontFamily="Consolas"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBlock Text="Format:" 
+                              Foreground="{StaticResource White40Brush}" 
+                              FontSize="11"
+                              Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding ImageFormat}" 
+                              Foreground="White" 
+                              FontSize="11"
+                              FontFamily="Consolas"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Разделитель -->
+                <Grid Grid.Column="1"/>
+
+                <!-- Visualization Panel -->
+                <Border Grid.Column="2"
+            Background="{StaticResource Coal800Brush}"
+            BorderBrush="{StaticResource BorderLightBrush}"
+            BorderThickness="1"
+            CornerRadius="16"
+            Padding="20"
+            Effect="{StaticResource PanelSoftShadow}">
+
+                    <StackPanel>
+                        <!-- Заголовок с режимом -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Path Data="{StaticResource ActivationsIconGeometry}"
+                          Fill="{StaticResource GoldBrush}"
+                          Width="20" Height="20"
+                          Stretch="Uniform"
+                          Margin="0,0,8,0"/>
+                                <TextBlock Text="Visualization" 
+                              Foreground="White" 
+                              FontSize="16" 
+                              FontWeight="SemiBold"/>
+                            </StackPanel>
+
+                            <!-- Current mode badge -->
+                            <Border Grid.Column="2"
+                        Background="{StaticResource White5Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="10,4">
+                                <TextBlock Text="{Binding CurrentMode}" 
+                              Foreground="{StaticResource GoldBrush}" 
+                              FontSize="11"
+                              FontWeight="Medium"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- Visualization Area -->
+                        <Border Background="{StaticResource Coal900Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Height="240"
+                    Margin="0,0,0,16">
+
+                            <Grid>
+                                <!-- Placeholder when no analysis -->
+                                <StackPanel Visibility="{Binding HasVisualization, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=inverse}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                    <Path Data="{Binding CurrentModeIcon}"
+                              Fill="{StaticResource White20Brush}"
+                              Width="48" Height="48"
+                              Stretch="Uniform"
+                              Margin="0,0,0,12"/>
+                                    <TextBlock Text="No visualization" 
+                                  Foreground="{StaticResource White30Brush}" 
+                                  FontSize="14"/>
+                                    <TextBlock Text="Click 'Analyze' to generate" 
+                                  Foreground="{StaticResource White20Brush}" 
+                                  FontSize="11"
+                                  HorizontalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Visualization with overlay controls -->
+                                <Grid Visibility="{Binding HasVisualization, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Image Source="{Binding VisualizationImage}" 
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                                    <!-- Opacity slider overlay (only for Grad-CAM) -->
+                                    <Border Visibility="{Binding IsGradCamMode, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Background="{StaticResource Black30Brush}"
+                                BorderBrush="{StaticResource BorderLightBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                VerticalAlignment="Bottom"
+                                Margin="12"
+                                Padding="12,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" 
+                                          Text="Overlay opacity:" 
+                                          Foreground="White" 
+                                          FontSize="10"
+                                          Margin="0,0,8,0"
+                                          VerticalAlignment="Center"/>
+
+                                            <Slider Grid.Column="1"
+                                        Minimum="0" Maximum="1"
+                                        Value="{Binding Opacity}"
+                                        Width="100"
+                                        TickFrequency="0.1"
+                                        IsSnapToTickEnabled="True"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Navigation controls for feature maps -->
+                        <StackPanel Visibility="{Binding IsActivationsMode, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                            <Button Command="{Binding PreviousFeatureMapCommand}"
+                        Style="{StaticResource IconButtonStyle}"
+                        Margin="0,0,8,0">
+                                <Path Data="M16,4 L4,16 L16,28" 
+                          Stroke="{StaticResource White70Brush}"
+                          StrokeThickness="2"
+                          Width="16" Height="16"
+                          Stretch="Uniform"/>
+                            </Button>
+
+                            <Border Background="{StaticResource White5Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16,6">
+                                <TextBlock Text="{Binding FeatureMapDisplay}" 
+                              Foreground="White" 
+                              FontSize="12"
+                              FontFamily="Consolas"/>
+                            </Border>
+
+                            <Button Command="{Binding NextFeatureMapCommand}"
+                        Style="{StaticResource IconButtonStyle}"
+                        Margin="8,0,0,0">
+                                <Path Data="M4,4 L16,16 L4,28" 
+                          Stroke="{StaticResource White70Brush}"
+                          StrokeThickness="2"
+                          Width="16" Height="16"
+                          Stretch="Uniform"/>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Stats for current feature map -->
+                        <Border Visibility="{Binding SelectedFeatureMap, Converter={StaticResource NullToVisibilityConverter}}"
+                    Background="{StaticResource White5Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="12"
+                    Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBlock Text="Min:" Foreground="{StaticResource White40Brush}" FontSize="10" Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding SelectedFeatureMap.MinValue, StringFormat=F3}" 
+                                  Foreground="{StaticResource White80Brush}" 
+                                  FontSize="10"
+                                  FontFamily="Consolas"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="Max:" Foreground="{StaticResource White40Brush}" FontSize="10" Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding SelectedFeatureMap.MaxValue, StringFormat=F3}" 
+                                  Foreground="{StaticResource White80Brush}" 
+                                  FontSize="10"
+                                  FontFamily="Consolas"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <TextBlock Text="Mean:" Foreground="{StaticResource White40Brush}" FontSize="10" Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding SelectedFeatureMap.MeanValue, StringFormat=F3}" 
+                                  Foreground="{StaticResource White80Brush}" 
+                                  FontSize="10"
+                                  FontFamily="Consolas"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+
+            <!-- ========== СЕКЦИЯ 3: ВИЗУАЛИЗАЦИЯ ФИЛЬТРОВ ========== -->
+            <Border Visibility="{Binding IsFiltersMode, Converter={StaticResource BoolToVisibilityConverter}}"
+        Background="{StaticResource Coal800Brush}"
+        BorderBrush="{StaticResource BorderLightBrush}"
+        BorderThickness="1"
+        CornerRadius="16"
+        Padding="20"
+        Effect="{StaticResource PanelSoftShadow}"
+        Margin="0,0,0,24">
+
+                <StackPanel>
+                    <!-- Заголовок -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource FiltersIconGeometry}"
+                  Stroke="{StaticResource GoldBrush}"
+                  StrokeThickness="2"
+                  Width="20" Height="20"
+                  Stretch="Uniform"
+                  Margin="0,0,8,0"/>
+                        <TextBlock Text="Layer Filters Visualization" 
+                      Foreground="White" 
+                      FontSize="16" 
+                      FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <!-- Сетка фильтров -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled"
+                      Height="180">
+                        <ItemsControl ItemsSource="{Binding FilterVisualizations}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource Coal900Brush}"
+                                BorderBrush="{StaticResource BorderLightBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Width="160"
+                                Height="160"
+                                Margin="0,0,12,0"
+                                Padding="12">
+                                        <StackPanel>
+                                            <!-- Filter preview (placeholder) -->
+                                            <Border Background="{StaticResource Black20Brush}"
+                                        BorderBrush="{StaticResource BorderLightBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Height="80"
+                                        Margin="0,0,0,8">
+                                                <Grid>
+                                                    <!-- Симуляция паттерна фильтра -->
+                                                    <Rectangle Fill="{StaticResource White5Brush}"/>
+                                                    <Rectangle Fill="{StaticResource GoldBrush}" 
+                                                   Width="20" Height="20"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Opacity="0.3"/>
+                                                    <TextBlock Text="{Binding Index}" 
+                                                  Foreground="{StaticResource White40Brush}"
+                                                  FontSize="16"
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Filter info -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0" 
+                                              Text="Size:" 
+                                              Foreground="{StaticResource White40Brush}" 
+                                              FontSize="9"
+                                              Margin="0,0,4,0"/>
+                                                <TextBlock Grid.Column="1" 
+                                              Text="{Binding Size}" 
+                                              Foreground="{StaticResource White80Brush}" 
+                                              FontSize="9"
+                                              FontFamily="Consolas"/>
+
+                                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                                              Text="Mean:" 
+                                              Foreground="{StaticResource White40Brush}" 
+                                              FontSize="9"
+                                              Margin="0,2,4,0"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="1" 
+                                              Text="{Binding MeanWeight, StringFormat=F3}" 
+                                              Foreground="{StaticResource White80Brush}" 
+                                              FontSize="9"
+                                              FontFamily="Consolas"/>
+                                            </Grid>
+
+                                            <!-- Min/Max indicators -->
+                                            <Grid Margin="0,4,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                                    <TextBlock Text="Min:" 
+                                                  Foreground="{StaticResource White40Brush}" 
+                                                  FontSize="8"
+                                                  Margin="0,0,2,0"/>
+                                                    <TextBlock Text="{Binding MinWeight, StringFormat=F3}" 
+                                                  Foreground="#f87171" 
+                                                  FontSize="8"
+                                                  FontFamily="Consolas"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <TextBlock Text="Max:" 
+                                                  Foreground="{StaticResource White40Brush}" 
+                                                  FontSize="8"
+                                                  Margin="0,0,2,0"/>
+                                                    <TextBlock Text="{Binding MaxWeight, StringFormat=F3}" 
+                                                  Foreground="{StaticResource EmeraldBrush}" 
+                                                  FontSize="8"
+                                                  FontFamily="Consolas"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Информация о фильтрах -->
+                    <Border Background="{StaticResource White5Brush}"
+                BorderBrush="{StaticResource BorderLightBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12"
+                Margin="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Ellipse Width="8" Height="8" Fill="#f87171" Margin="0,0,4,0"/>
+                                <TextBlock Text="Negative weights" Foreground="{StaticResource White60Brush}" FontSize="10" Margin="0,0,16,0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Ellipse Width="8" Height="8" Fill="{StaticResource White40Brush}" Margin="0,0,4,0"/>
+                                <TextBlock Text="Near zero" Foreground="{StaticResource White60Brush}" FontSize="10" Margin="0,0,16,0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Ellipse Width="8" Height="8" Fill="{StaticResource EmeraldBrush}" Margin="0,0,4,0"/>
+                                <TextBlock Text="Positive weights" Foreground="{StaticResource White60Brush}" FontSize="10"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ========== СЕКЦИЯ 4: КАРТЫ АКТИВАЦИИ ========== -->
+            <Border Visibility="{Binding IsActivationsMode, Converter={StaticResource BoolToVisibilityConverter}}"
+        Background="{StaticResource Coal800Brush}"
+        BorderBrush="{StaticResource BorderLightBrush}"
+        BorderThickness="1"
+        CornerRadius="16"
+        Padding="20"
+        Effect="{StaticResource PanelSoftShadow}"
+        Margin="0,0,0,24">
+
+                <StackPanel>
+                    <!-- Заголовок с навигацией -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Path Data="{StaticResource ActivationsIconGeometry}"
+                      Fill="{StaticResource GoldBrush}"
+                      Width="20" Height="20"
+                      Stretch="Uniform"
+                      Margin="0,0,8,0"/>
+                            <TextBlock Text="Feature Maps" 
+                          Foreground="White" 
+                          FontSize="16" 
+                          FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <!-- Навигация по картам -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button Command="{Binding PreviousFeatureMapCommand}"
+                        Style="{StaticResource IconButtonStyle}"
+                        Margin="0,0,8,0">
+                                <Path Data="M16,4 L4,16 L16,28" 
+                          Stroke="{StaticResource White70Brush}"
+                          StrokeThickness="2"
+                          Width="16" Height="16"
+                          Stretch="Uniform"/>
+                            </Button>
+
+                            <Border Background="{StaticResource White5Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16,6">
+                                <TextBlock Text="{Binding FeatureMapDisplay}" 
+                              Foreground="White" 
+                              FontSize="12"
+                              FontFamily="Consolas"/>
+                            </Border>
+
+                            <Button Command="{Binding NextFeatureMapCommand}"
+                        Style="{StaticResource IconButtonStyle}"
+                        Margin="8,0,0,0">
+                                <Path Data="M4,4 L16,16 L4,28" 
+                          Stroke="{StaticResource White70Brush}"
+                          StrokeThickness="2"
+                          Width="16" Height="16"
+                          Stretch="Uniform"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Основная карта активации -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Feature Map Preview -->
+                        <Border Grid.Column="0"
+                    Background="{StaticResource Coal900Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="{Binding SelectedFeatureMap.Name}" 
+                              Foreground="White" 
+                              FontSize="14" 
+                              FontWeight="Medium"
+                              HorizontalAlignment="Center"
+                              Margin="0,0,0,12"/>
+
+                                <!-- Тепловая карта (placeholder) -->
+                                <Border Background="{StaticResource Black20Brush}"
+                            BorderBrush="{StaticResource BorderLightBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Height="200">
+                                    <Grid>
+                                        <!-- Градиентная заливка для симуляции -->
+                                        <Rectangle>
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="#000000" Offset="0.0"/>
+                                                    <GradientStop Color="#d4af37" Offset="0.3"/>
+                                                    <GradientStop Color="#ffffff" Offset="0.6"/>
+                                                    <GradientStop Color="#d4af37" Offset="0.8"/>
+                                                    <GradientStop Color="#000000" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+
+                                        <TextBlock Text="Feature Map Visualization" 
+                                      Foreground="{StaticResource White40Brush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Статистика карты -->
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                        <TextBlock Text="Min:" Foreground="{StaticResource White40Brush}" FontSize="10" Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding SelectedFeatureMap.MinValue, StringFormat=F3}" 
+                                      Foreground="{StaticResource White80Brush}" 
+                                      FontSize="10"
+                                      FontFamily="Consolas"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="Max:" Foreground="{StaticResource White40Brush}" FontSize="10" Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding SelectedFeatureMap.MaxValue, StringFormat=F3}" 
+                                      Foreground="{StaticResource White80Brush}" 
+                                      FontSize="10"
+                                      FontFamily="Consolas"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="Mean:" Foreground="{StaticResource White40Brush}" FontSize="10" Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding SelectedFeatureMap.MeanValue, StringFormat=F3}" 
+                                      Foreground="{StaticResource White80Brush}" 
+                                      FontSize="10"
+                                      FontFamily="Consolas"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Разделитель -->
+                        <Grid Grid.Column="1"/>
+
+                        <!-- Гистограмма распределения -->
+                        <Border Grid.Column="2"
+                    Background="{StaticResource Coal900Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Activation Distribution" 
+                              Foreground="White" 
+                              FontSize="14" 
+                              FontWeight="Medium"
+                              HorizontalAlignment="Center"
+                              Margin="0,0,0,12"/>
+
+                                <!-- Гистограмма (placeholder) -->
+                                <Grid Height="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Canvas Grid.Row="0" Margin="10,0,10,10">
+                                        <!-- Столбцы гистограммы -->
+                                        <Rectangle Canvas.Left="10" Canvas.Bottom="0" 
+                                      Width="20" Height="120" 
+                                      Fill="{StaticResource GoldBrush}" Opacity="0.6"/>
+                                        <Rectangle Canvas.Left="40" Canvas.Bottom="0" 
+                                      Width="20" Height="80" 
+                                      Fill="{StaticResource GoldBrush}" Opacity="0.6"/>
+                                        <Rectangle Canvas.Left="70" Canvas.Bottom="0" 
+                                      Width="20" Height="160" 
+                                      Fill="{StaticResource GoldBrush}" Opacity="0.6"/>
+                                        <Rectangle Canvas.Left="100" Canvas.Bottom="0" 
+                                      Width="20" Height="140" 
+                                      Fill="{StaticResource GoldBrush}" Opacity="0.6"/>
+                                        <Rectangle Canvas.Left="130" Canvas.Bottom="0" 
+                                      Width="20" Height="60" 
+                                      Fill="{StaticResource GoldBrush}" Opacity="0.6"/>
+                                        <Rectangle Canvas.Left="160" Canvas.Bottom="0" 
+                                      Width="20" Height="100" 
+                                      Fill="{StaticResource GoldBrush}" Opacity="0.6"/>
+                                    </Canvas>
+
+                                    <!-- Подписи оси X -->
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="-0.5" Foreground="{StaticResource White30Brush}" FontSize="8" Margin="0,0,20,0"/>
+                                        <TextBlock Text="0" Foreground="{StaticResource White30Brush}" FontSize="8" Margin="0,0,20,0"/>
+                                        <TextBlock Text="0.5" Foreground="{StaticResource White30Brush}" FontSize="8"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBlock Text="Activation values" 
+                              Foreground="{StaticResource White40Brush}" 
+                              FontSize="9"
+                              HorizontalAlignment="Center"
+                              Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- All feature maps thumbnails -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled"
+                      Height="80"
+                      Margin="0,16,0,0">
+                        <ItemsControl ItemsSource="{Binding FeatureMaps}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource Coal900Brush}"
+                                BorderBrush="{StaticResource BorderLightBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Width="60"
+                                Height="60"
+                                Margin="0,0,8,0"
+                                Padding="4">
+                                        <Grid>
+                                            <Rectangle Fill="{StaticResource Black20Brush}"/>
+                                            <TextBlock Text="{Binding Index}" 
+                                          Foreground="{StaticResource White40Brush}"
+                                          FontSize="16"
+                                          FontWeight="Bold"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+
+            <!-- Views/AnalysisView.xaml - добавляем после карт активации -->
+
+            <!-- ========== СЕКЦИЯ 5: GRAD-CAM ========== -->
+            <Border Visibility="{Binding IsGradCamMode, Converter={StaticResource BoolToVisibilityConverter}}"
+        Background="{StaticResource Coal800Brush}"
+        BorderBrush="{StaticResource BorderLightBrush}"
+        BorderThickness="1"
+        CornerRadius="16"
+        Padding="20"
+        Effect="{StaticResource PanelSoftShadow}"
+        Margin="0,0,0,24">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="24"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Original with heatmap -->
+                    <Border Grid.Column="0"
+                Background="{StaticResource Coal900Brush}"
+                BorderBrush="{StaticResource BorderLightBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Grad-CAM Heatmap" 
+                          Foreground="White" 
+                          FontSize="14" 
+                          FontWeight="Medium"
+                          HorizontalAlignment="Center"
+                          Margin="0,0,0,12"/>
+
+                            <Border Background="{StaticResource Black20Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Height="200">
+                                <Grid>
+                                    <!-- Симуляция Grad-CAM -->
+                                    <Rectangle Fill="{StaticResource Coal950Brush}"/>
+                                    <Ellipse Width="100" Height="100"
+                                Fill="{StaticResource GoldBrush}"
+                                Opacity="0.3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                                    <TextBlock Text="Grad-CAM Visualization" 
+                                  Foreground="{StaticResource White40Brush}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Opacity control -->
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" 
+                              Text="Opacity:" 
+                              Foreground="{StaticResource White60Brush}" 
+                              FontSize="11"
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Center"/>
+
+                                <Slider Grid.Column="1"
+                            Minimum="0" Maximum="1"
+                            Value="{Binding Opacity}"
+                            TickFrequency="0.1"
+                            IsSnapToTickEnabled="True"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Разделитель -->
+                    <Grid Grid.Column="1"/>
+
+                    <!-- Class activation details -->
+                    <Border Grid.Column="2"
+                Background="{StaticResource Coal900Brush}"
+                BorderBrush="{StaticResource BorderLightBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Class Activation" 
+                          Foreground="White" 
+                          FontSize="14" 
+                          FontWeight="Medium"
+                          HorizontalAlignment="Center"
+                          Margin="0,0,0,12"/>
+
+                            <!-- Top classes -->
+                            <ItemsControl ItemsSource="{Binding TopClasses}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" 
+                                          Text="{Binding ClassIndex}" 
+                                          Foreground="{StaticResource GoldBrush}"
+                                          FontFamily="Consolas"
+                                          FontSize="11"/>
+
+                                            <TextBlock Grid.Column="1" 
+                                          Text="{Binding ClassName}" 
+                                          Foreground="White"
+                                          FontSize="11"/>
+
+                                            <TextBlock Grid.Column="2" 
+                                          Text="{Binding Probability, StringFormat=P1}" 
+                                          Foreground="{StaticResource White60Brush}"
+                                          FontFamily="Consolas"
+                                          FontSize="11"
+                                          HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Activation map stats -->
+                            <Border Background="{StaticResource White5Brush}"
+                        BorderBrush="{StaticResource BorderLightBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12"
+                        Margin="0,12,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Peak activation" Foreground="{StaticResource White40Brush}" FontSize="9"/>
+                                        <TextBlock Text="{Binding PeakActivation, StringFormat=F3}" 
+                                      Foreground="White" 
+                                      FontSize="14"
+                                      FontWeight="Bold"
+                                      FontFamily="Consolas"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Location" Foreground="{StaticResource White40Brush}" FontSize="9"/>
+                                        <TextBlock Text="{Binding PeakLocation}" 
+                                      Foreground="White" 
+                                      FontSize="14"
+                                      FontWeight="Bold"
+                                      FontFamily="Consolas"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
