@@ -1,34 +1,26 @@
 ﻿using SharpLeNet.Vision.Wpf.Infrastructure;
+using SharpLeNet.Vision.Wpf.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace SharpLeNet.Vision.Wpf.ViewModels;
 
 public class ConfusionMatrixViewModel : BaseViewModel
 {
-    private int[,] _matrix;
-    private int _classCount;
+    private int _selectedClassIndex = 0;
+    private ObservableCollection<MatrixCell> _matrixCells;
     private ObservableCollection<string> _classLabels;
-    private int _selectedClass;
 
     public ConfusionMatrixViewModel(int classCount)
     {
-        _classCount = classCount;
-        _matrix = new int[classCount, classCount];
-        _classLabels = new ObservableCollection<string>();
-
+        ClassLabels = new ObservableCollection<string>();
         for (int i = 0; i < classCount; i++)
         {
-            _classLabels.Add($"Class {i}");
+            ClassLabels.Add(i.ToString());
         }
 
-        // Демо-данные
-        LoadDemoData();
-    }
-
-    public int[,] Matrix
-    {
-        get => _matrix;
-        set => SetProperty(ref _matrix, value);
+        _matrixCells = new ObservableCollection<MatrixCell>();
+        InitializeMatrix();
     }
 
     public ObservableCollection<string> ClassLabels
@@ -37,39 +29,49 @@ public class ConfusionMatrixViewModel : BaseViewModel
         set => SetProperty(ref _classLabels, value);
     }
 
-    public int SelectedClass
+    public ObservableCollection<MatrixCell> MatrixCells
     {
-        get => _selectedClass;
+        get => _matrixCells;
+        set => SetProperty(ref _matrixCells, value);
+    }
+
+    public int SelectedClassIndex
+    {
+        get => _selectedClassIndex;
         set
         {
-            if (SetProperty(ref _selectedClass, value))
+            if (SetProperty(ref _selectedClassIndex, value))
             {
                 OnPropertyChanged(nameof(SelectedClassData));
             }
         }
     }
 
-    public (int TP, int FP, int FN, int TN) SelectedClassData
+    public string SelectedClass
+    {
+        get => ClassLabels[SelectedClassIndex];
+        set
+        {
+            int index = ClassLabels.IndexOf(value);
+            if (index >= 0)
+            {
+                SelectedClassIndex = index;
+            }
+        }
+    }
+
+    public ClassMetrics SelectedClassData
     {
         get
         {
-            var tp = Matrix[SelectedClass, SelectedClass];
-            var fp = 0;
-            var fn = 0;
-            var tn = 0;
-
-            for (int i = 0; i < _classCount; i++)
+            // Здесь будет реальный расчет на основе матрицы
+            return new ClassMetrics
             {
-                for (int j = 0; j < _classCount; j++)
-                {
-                    if (i == SelectedClass && j == SelectedClass) continue;
-                    if (i == SelectedClass) fn += Matrix[i, j];
-                    if (j == SelectedClass) fp += Matrix[i, j];
-                    if (i != SelectedClass && j != SelectedClass) tn += Matrix[i, j];
-                }
-            }
-
-            return (tp, fp, fn, tn);
+                TP = 82,
+                FP = 3,
+                FN = 5,
+                TN = 890
+            };
         }
     }
 
@@ -77,32 +79,45 @@ public class ConfusionMatrixViewModel : BaseViewModel
     {
         get
         {
-            int total = 0;
-            int correct = 0;
-            for (int i = 0; i < _classCount; i++)
-            {
-                for (int j = 0; j < _classCount; j++)
-                {
-                    total += Matrix[i, j];
-                    if (i == j) correct += Matrix[i, j];
-                }
-            }
-            return total > 0 ? (double)correct / total * 100 : 0;
+            // Здесь будет реальный расчет
+            return 98.1;
         }
     }
 
-    private void LoadDemoData()
+    public string OverallAccuracyDisplay => $"{OverallAccuracy:F1}%";
+
+    private void InitializeMatrix()
     {
         var random = new Random(42);
-        for (int i = 0; i < _classCount; i++)
+        for (int i = 0; i < 10; i++)
         {
-            for (int j = 0; j < _classCount; j++)
+            for (int j = 0; j < 10; j++)
             {
+                int value;
                 if (i == j)
-                    _matrix[i, j] = 80 + random.Next(15);
+                {
+                    value = 80 + random.Next(15);
+                }
                 else
-                    _matrix[i, j] = random.Next(5);
+                {
+                    value = random.Next(8);
+                }
+
+                var color = i == j
+                    ? new SolidColorBrush(Color.FromRgb(212, 175, 55)) // Gold
+                    : new SolidColorBrush(Color.FromRgb(50, 50, 55)); // Dark gray
+
+                _matrixCells.Add(new MatrixCell
+                {
+                    Row = i,
+                    Column = j,
+                    Value = value,
+                    Color = color,
+                    TextColor = i == j ? Brushes.Black : Brushes.White,
+                    ToolTip = $"Actual: {i}, Predicted: {j}\nCount: {value}"
+                });
             }
         }
     }
 }
+

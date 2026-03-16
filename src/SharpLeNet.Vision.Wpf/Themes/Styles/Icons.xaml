@@ -53,4 +53,57 @@
 
     <Geometry x:Key="ZapIconGeometry">M13,2 L4,14 L12,14 L11,22 L20,10 L12,10 L13,2</Geometry>
     <PathGeometry x:Key="ZapIcon" Figures="M13,2 L4,14 L12,14 L11,22 L20,10 L12,10 L13,2"/>
+
+    <!-- Analysis Icons -->
+    <Geometry x:Key="ActivationsIconGeometry">M4,4 L20,4 L20,20 L4,20 Z M8,8 L16,8 L16,16 L8,16 Z</Geometry>
+    <PathGeometry x:Key="ActivationsIcon" Figures="M4,4 L20,4 L20,20 L4,20 Z M8,8 L16,8 L16,16 L8,16 Z"/>
+
+    <Geometry x:Key="FiltersIconGeometry">M4,4 L28,12 M4,20 L28,20 M4,12 L28,4</Geometry>
+    <PathGeometry x:Key="FiltersIcon" Figures="M4,4 L28,12 M4,20 L28,20 M4,12 L28,4"/>
+
+    <Geometry x:Key="GradCamIconGeometry">M2,12 Q8,4 14,12 Q20,20 26,12</Geometry>
+    <PathGeometry x:Key="GradCamIcon" Figures="M2,12 Q8,4 14,12 Q20,20 26,12"/>
+
+    <Geometry x:Key="LoadImageIconGeometry">M4,4 L28,4 L28,28 L4,28 Z M8,8 L24,8 L24,24 L8,24 Z M16,12 L20,16 L16,20 L12,16 Z</Geometry>
+    <PathGeometry x:Key="LoadImageIcon" Figures="M4,4 L28,4 L28,28 L4,28 Z M8,8 L24,8 L24,24 L8,24 Z M16,12 L20,16 L16,20 L12,16 Z"/>
+
+    <Geometry x:Key="AnalyzeIconGeometry">M15 3 L22 10 L15 17 M8 3 L8 17</Geometry>
+    <PathGeometry x:Key="AnalyzeIcon" Figures="M15 3 L22 10 L15 17 M8 3 L8 17"/>
+
+    <Geometry x:Key="LayerIconGeometry">M4,4 L20,4 L20,20 L4,20 Z</Geometry>
+    <PathGeometry x:Key="LayerIcon" Figures="M4,4 L20,4 L20,20 L4,20 Z"/>
+
+    <!-- Playground Icons -->
+    <Geometry x:Key="PencilIconGeometry">M4 20 L20 4 L28 12 L12 28 L4 28 L4 20</Geometry>
+    <PathGeometry x:Key="PencilIcon" Figures="M4 20 L20 4 L28 12 L12 28 L4 28 L4 20"/>
+
+    <Geometry x:Key="UploadIconGeometry">M4 20 L12 20 L12 28 L20 28 L20 20 L28 20 L16 8 L4 20 M20 28 L28 28 L28 20</Geometry>
+    <PathGeometry x:Key="UploadIcon" Figures="M4 20 L12 20 L12 28 L20 28 L20 20 L28 20 L16 8 L4 20 M20 28 L28 28 L28 20"/>
+
+    <Geometry x:Key="LinkIconGeometry">M8 16 L16 8 L24 16 M16 24 L8 16 L16 8</Geometry>
+    <PathGeometry x:Key="LinkIcon" Figures="M8 16 L16 8 L24 16 M16 24 L8 16 L16 8"/>
+
+    <Geometry x:Key="CheckCircleIconGeometry">M24 12 L12 24 L8 20 M28 16 A12 12 0 1 1 16 4</Geometry>
+    <PathGeometry x:Key="CheckCircleIcon" Figures="M24 12 L12 24 L8 20 M28 16 A12 12 0 1 1 16 4"/>
+
+    <Geometry x:Key="AlertTriangleIconGeometry">M16 4 L28 28 L4 28 L16 4 M16 12 L16 20 M16 24 L16 24.01</Geometry>
+    <PathGeometry x:Key="AlertTriangleIcon" Figures="M16 4 L28 28 L4 28 L16 4 M16 12 L16 20 M16 24 L16 24.01"/>
+
+    <Geometry x:Key="DatabaseIconGeometry">M4 8 L28 8 L28 24 L4 24 L4 8 M4 12 L28 12 M4 20 L28 20 M4 16 L28 16</Geometry>
+    <PathGeometry x:Key="DatabaseIcon" Figures="M4 8 L28 8 L28 24 L4 24 L4 8 M4 12 L28 12 M4 20 L28 20 M4 16 L28 16"/>
+
+    <Geometry x:Key="DownloadIconGeometry">M16 4 L16 20 M8 12 L16 20 L24 12 M4 24 L28 24</Geometry>
+    <PathGeometry x:Key="DownloadIcon" Figures="M16 4 L16 20 M8 12 L16 20 L24 12 M4 24 L28 24"/>
+
+    <Geometry x:Key="ExternalLinkIconGeometry">M20 4 L28 4 L28 12 M28 4 L16 16 M4 24 L24 24 L24 8</Geometry>
+    <PathGeometry x:Key="ExternalLinkIcon" Figures="M20 4 L28 4 L28 12 M28 4 L16 16 M4 24 L24 24 L24 8"/>
+
+    <Geometry x:Key="PlayIconGeometry">M8 4 L28 16 L8 28 L8 4</Geometry>
+    <PathGeometry x:Key="PlayIcon" Figures="M8 4 L28 16 L8 28 L8 4"/>
+
+    <Geometry x:Key="GridIconGeometry">M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16</Geometry>
+    <PathGeometry x:Key="GridIcon" Figures="M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16"/>
+
+
 </ResourceDictionary>
+    

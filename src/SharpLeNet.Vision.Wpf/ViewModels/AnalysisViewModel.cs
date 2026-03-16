@@ -1,12 +1,6 @@
 ﻿using SharpLeNet.Vision.Wpf.Infrastructure;
 using SharpLeNet.Vision.Wpf.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SharpLeNet.Vision.Wpf.ViewModels;
@@ -14,11 +8,22 @@ namespace SharpLeNet.Vision.Wpf.ViewModels;
 public class AnalysisViewModel : BaseViewModel
 {
     private LayerBlockViewModel? _selectedLayer;
-    private int _selectedFeatureMapIndex;
     private VisualizationMode _currentMode = VisualizationMode.Activations;
+    private int _selectedFeatureMapIndex;
     private double _opacity = 0.7;
     private bool _showOverlay = true;
     private string? _originalImagePath;
+
+    private string _imageDimensions = "28 x 28";
+    private string _imageFormat = "PNG";
+    private bool _hasVisualization;
+    private string _visualizationImage;
+    private string _currentModeIcon;
+
+    private ObservableCollection<TopClassViewModel> _topClasses;
+    private double _peakActivation = 0.856;
+    private string _peakLocation = "(14, 12)";
+
 
     public AnalysisViewModel()
     {
@@ -37,13 +42,21 @@ public class AnalysisViewModel : BaseViewModel
 
         // Загружаем демо-данные
         LoadDemoData();
+
+        _currentModeIcon = "ActivationsIconGeometry";
+        _visualizationImage = string.Empty;
+
+        _topClasses = new ObservableCollection<TopClassViewModel>();
+        LoadTopClasses();
     }
 
+    // Коллекции
     public ObservableCollection<LayerBlockViewModel> Layers { get; }
     public ObservableCollection<FeatureMapViewModel> FeatureMaps { get; }
     public ObservableCollection<FilterViewModel> FilterVisualizations { get; }
     public ObservableCollection<string> AvailableImages { get; }
 
+    // Свойства
     public LayerBlockViewModel? SelectedLayer
     {
         get => _selectedLayer;
@@ -128,12 +141,7 @@ public class AnalysisViewModel : BaseViewModel
     public ICommand NextFeatureMapCommand { get; }
     public ICommand ExportVisualizationCommand { get; }
 
-    private void LoadImage(object? parameter)
-    {
-        // В реальном приложении - диалог выбора файла
-        OriginalImagePath = "demo_image.png";
-        AvailableImages.Add(OriginalImagePath);
-    }
+    // Методы команд
 
     private void Analyze(object? parameter)
     {
@@ -158,13 +166,14 @@ public class AnalysisViewModel : BaseViewModel
         // Логика экспорта визуализации
     }
 
+    // Вспомогательные методы
     private void LoadFeatureMaps()
     {
         FeatureMaps.Clear();
         if (SelectedLayer == null) return;
 
         // Демо-данные для feature maps
-        var random = new Random(42);
+        var random = new System.Random(42);
         int mapCount = SelectedLayer.Type switch
         {
             "conv2d" => 6, // 6 filters
@@ -180,8 +189,7 @@ public class AnalysisViewModel : BaseViewModel
                 Name = $"Feature Map {i + 1}",
                 MinValue = random.NextDouble() * 0.5,
                 MaxValue = 0.5 + random.NextDouble() * 0.5,
-                MeanValue = 0.3 + random.NextDouble() * 0.4,
-                HeatmapData = GenerateHeatmapData(random)
+                MeanValue = 0.3 + random.NextDouble() * 0.4
             });
         }
 
@@ -190,6 +198,7 @@ public class AnalysisViewModel : BaseViewModel
 
     private void LoadVisualization()
     {
+        HasVisualization = true;
         switch (CurrentMode)
         {
             case VisualizationMode.Activations:
@@ -202,6 +211,7 @@ public class AnalysisViewModel : BaseViewModel
                 LoadGradCAM();
                 break;
         }
+        OnPropertyChanged(nameof(CurrentModeIcon));       
     }
 
     private void LoadActivations()
@@ -215,14 +225,13 @@ public class AnalysisViewModel : BaseViewModel
         if (SelectedLayer?.Type != "conv2d") return;
 
         // Демо-данные для фильтров
-        var random = new Random(42);
+        var random = new System.Random(42);
         for (int i = 0; i < 6; i++)
         {
             FilterVisualizations.Add(new FilterViewModel
             {
                 Index = i,
                 Size = "5x5",
-                Weights = GenerateWeights(random),
                 MinWeight = -0.3,
                 MaxWeight = 0.5,
                 MeanWeight = 0.1
@@ -235,48 +244,139 @@ public class AnalysisViewModel : BaseViewModel
         // Здесь будет логика Grad-CAM
     }
 
-    private double[,] GenerateHeatmapData(Random random)
-    {
-        var data = new double[28, 28];
-        for (int y = 0; y < 28; y++)
-            for (int x = 0; x < 28; x++)
-                data[y, x] = Math.Exp(-((x - 14) * (x - 14) + (y - 14) * (y - 14)) / 100) * random.NextDouble();
-        return data;
-    }
-
-    private double[,] GenerateWeights(Random random)
-    {
-        var weights = new double[5, 5];
-        for (int y = 0; y < 5; y++)
-            for (int x = 0; x < 5; x++)
-                weights[y, x] = random.NextDouble() * 0.8 - 0.3;
-        return weights;
-    }
-
     private void LoadDemoData()
     {
         // Добавляем демо-слои
-        var convLayer = new LayerBlockViewModel
+        Layers.Add(new LayerBlockViewModel
         {
             Id = "#1",
             Name = "Conv2D",
             Subtitle = "C1 • 6 filters",
             Type = "conv2d",
             Color = "#60a5fa"
-        };
-        Layers.Add(convLayer);
+        });
 
-        var poolLayer = new LayerBlockViewModel
+        Layers.Add(new LayerBlockViewModel
         {
             Id = "#2",
             Name = "Pooling",
             Subtitle = "S2 • AvgPool",
             Type = "pooling",
             Color = "#6ee7b7"
-        };
-        Layers.Add(poolLayer);
+        });
 
-        SelectedLayer = convLayer;
+        Layers.Add(new LayerBlockViewModel
+        {
+            Id = "#3",
+            Name = "Conv2D",
+            Subtitle = "C3 • 16 filters",
+            Type = "conv2d",
+            Color = "#60a5fa"
+        });
+
+        Layers.Add(new LayerBlockViewModel
+        {
+            Id = "#4",
+            Name = "Activation",
+            Subtitle = "ReLU",
+            Type = "activation",
+            Color = "#f0abfc"
+        });
+
+        Layers.Add(new LayerBlockViewModel
+        {
+            Id = "#5",
+            Name = "Pooling",
+            Subtitle = "S4 • AvgPool",
+            Type = "pooling",
+            Color = "#6ee7b7"
+        });
+
+        Layers.Add(new LayerBlockViewModel
+        {
+            Id = "#6",
+            Name = "Flatten",
+            Subtitle = "Vectorize",
+            Type = "flatten",
+            Color = "#fda4af"
+        });
+
+        SelectedLayer = Layers[0];
+    }
+
+    public string ImageDimensions
+    {
+        get => _imageDimensions;
+        set => SetProperty(ref _imageDimensions, value);
+    }
+
+    public string ImageFormat
+    {
+        get => _imageFormat;
+        set => SetProperty(ref _imageFormat, value);
+    }
+
+    public bool HasVisualization
+    {
+        get => _hasVisualization;
+        set => SetProperty(ref _hasVisualization, value);
+    }
+
+    public string VisualizationImage
+    {
+        get => _visualizationImage;
+        set => SetProperty(ref _visualizationImage, value);
+    }
+
+    public string CurrentModeIcon
+    {
+        get
+        {
+            return CurrentMode switch
+            {
+                VisualizationMode.Activations => "ActivationsIconGeometry",
+                VisualizationMode.Filters => "FiltersIconGeometry",
+                VisualizationMode.GradCAM => "GradCamIconGeometry",
+                _ => "ActivationsIconGeometry"
+            };
+        }
+    }
+
+    // Обновляем LoadImage
+    private void LoadImage(object? parameter)
+    {
+        // В реальном приложении - диалог выбора файла
+        OriginalImagePath = "demo_image.png";
+        AvailableImages.Add(OriginalImagePath);
+        ImageDimensions = "28 x 28";
+        ImageFormat = "PNG";
+    }
+
+    public ObservableCollection<TopClassViewModel> TopClasses
+    {
+        get => _topClasses;
+        set => SetProperty(ref _topClasses, value);
+    }
+
+    public double PeakActivation
+    {
+        get => _peakActivation;
+        set => SetProperty(ref _peakActivation, value);
+    }
+
+    public string PeakLocation
+    {
+        get => _peakLocation;
+        set => SetProperty(ref _peakLocation, value);
+    }
+
+    private void LoadTopClasses()
+    {
+        _topClasses.Clear();
+        _topClasses.Add(new TopClassViewModel { ClassIndex = "07", ClassName = "Digit 7", Probability = 0.92 });
+        _topClasses.Add(new TopClassViewModel { ClassIndex = "01", ClassName = "Digit 1", Probability = 0.05 });
+        _topClasses.Add(new TopClassViewModel { ClassIndex = "09", ClassName = "Digit 9", Probability = 0.02 });
+        _topClasses.Add(new TopClassViewModel { ClassIndex = "04", ClassName = "Digit 4", Probability = 0.01 });
     }
 }
 

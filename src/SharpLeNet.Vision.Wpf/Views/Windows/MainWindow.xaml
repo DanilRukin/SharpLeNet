@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:SharpLeNet.Vision.Wpf.Views.Windows"
         xmlns:controls="clr-namespace:SharpLeNet.Vision.Wpf.Views.Controls"
         xmlns:viewModels="clr-namespace:SharpLeNet.Vision.Wpf.ViewModels"
+        xmlns:playground="clr-namespace:SharpLeNet.Vision.Wpf.ViewModels.Playground"
         Title="SharpLeNet Vision"
         Width="1440" Height="800"
         WindowStartupLocation="CenterScreen"
@@ -101,31 +102,11 @@
                         </DataTemplate>
 
                         <DataTemplate DataType="{x:Type viewModels:AnalysisViewModel}">
-                            <Border Background="{StaticResource Coal800Brush}"
-                        BorderBrush="{StaticResource BorderLightBrush}"
-                        BorderThickness="1"
-                        CornerRadius="16"
-                        Margin="24">
-                                <TextBlock Text="Analysis Tab - Coming Soon" 
-                              Foreground="{StaticResource White60Brush}"
-                              FontSize="24"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                            </Border>
+                            <controls:AnalysisView DataContext="{Binding}"/>
                         </DataTemplate>
 
-                        <DataTemplate DataType="{x:Type viewModels:PlaygroundViewModel}">
-                            <Border Background="{StaticResource Coal800Brush}"
-                        BorderBrush="{StaticResource BorderLightBrush}"
-                        BorderThickness="1"
-                        CornerRadius="16"
-                        Margin="24">
-                                <TextBlock Text="Playground Tab - Coming Soon" 
-                              Foreground="{StaticResource White60Brush}"
-                              FontSize="24"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                            </Border>
+                        <DataTemplate DataType="{x:Type playground:PlaygroundViewModel}">
+                            <controls:PlaygroundView DataContext="{Binding}"/>
                         </DataTemplate>
                     </ContentControl.Resources>
                 </ContentControl>

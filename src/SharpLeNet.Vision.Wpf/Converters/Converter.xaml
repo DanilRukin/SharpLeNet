@@ -18,4 +18,8 @@
     <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
     <local:DataPointsToPointCollectionConverter x:Key="DataPointsToPointCollectionConverter"/>
     <local:DoubleRangeConverter x:Key="DoubleRangeConverter"/>
+    <local:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
+    <local:PercentageToWidthConverter x:Key="PercentageToWidthConverter"/>
+    <local:BooleanToObjectConverter x:Key="BooleanToObjectConverter"/>
+    <local:ThumbPositionConverter x:Key="ThumbPositionConverter"/>
 </ResourceDictionary>

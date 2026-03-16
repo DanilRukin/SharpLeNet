@@ -1,5 +1,6 @@
 ﻿using SharpLeNet.Core;
 using SharpLeNet.Vision.Wpf.Infrastructure;
+using SharpLeNet.Vision.Wpf.ViewModels.Playground;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -27,6 +28,8 @@ public class MainViewModel : BaseViewModel
         Properties = new PropertiesViewModel();
         Training = new TrainingViewModel();
         StatusBar = new StatusBarViewModel();
+        Analysis = new AnalysisViewModel();
+        Playground = new PlaygroundViewModel();
         Tabs = new ObservableCollection<TabViewModel>
             {
                 new TabViewModel("Architect", typeof(ArchitectureViewModel), true),
@@ -35,7 +38,7 @@ public class MainViewModel : BaseViewModel
                 new TabViewModel("Playground", typeof(PlaygroundViewModel), false)
             };
 
-        SelectedTab = Training;
+        SelectedTab = Architecture;
 
         // Команды
         StartTrainingCommand = new RelayCommand(StartTraining, (_) => !IsTraining);
@@ -53,6 +56,9 @@ public class MainViewModel : BaseViewModel
     public PropertiesViewModel Properties { get; }
     public TrainingViewModel Training { get; }
     public StatusBarViewModel StatusBar { get; }
+    public AnalysisViewModel Analysis { get; }
+    public PlaygroundViewModel Playground { get; }
+
     public ObservableCollection<TabViewModel> Tabs { get; }
 
     public string ProjectName
@@ -111,10 +117,10 @@ public class MainViewModel : BaseViewModel
             SelectedTab = Architecture;
         else if (tab.ViewModelType == typeof(TrainingViewModel))
             SelectedTab = Training;
-        //else if (tab.ViewModelType == typeof(AnalysisViewModel))
-        //    SelectedTab = Analysis;
-        //else if (tab.ViewModelType == typeof(PlaygroundViewModel))
-        //    SelectedTab = Playground;
+        else if (tab.ViewModelType == typeof(AnalysisViewModel))
+            SelectedTab = Analysis;
+        else if (tab.ViewModelType == typeof(PlaygroundViewModel))
+            SelectedTab = Playground;
     }
 
     private void StartTraining(object? parameter)
