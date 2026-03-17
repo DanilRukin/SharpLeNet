@@ -1,0 +1,456 @@
+﻿<!-- Views/Menu/HomeMenuView.xaml -->
+<UserControl x:Class="SharpLeNet.Vision.Wpf.Views.Menu.HomeMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:menu="clr-namespace:SharpLeNet.Vision.Wpf.ViewModels.Menu"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="820"
+             d:DataContext="{d:DesignInstance menu:HomeMenuViewModel}">
+
+    <Border Style="{StaticResource MenuModalStyle}" Width="820">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" Style="{StaticResource MenuHeaderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Border Width="56" Height="56"
+                                Background="{StaticResource Gold500Brush}"
+                                Opacity="0.1"
+                                BorderBrush="{StaticResource Gold400Brush}"
+                                BorderThickness="1"
+                                CornerRadius="16">
+                            <Path Data="{StaticResource LayoutDashboardIconGeometry}"
+                                  Fill="{StaticResource Gold400Brush}"
+                                  Width="28" Height="28"
+                                  Stretch="Uniform"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Панель управления"
+                                      Foreground="White"
+                                      FontSize="20"
+                                      FontWeight="Bold"/>
+                            <TextBlock Text="SharpLeNet Vision Dashboard"
+                                      Foreground="{StaticResource White40Brush}"
+                                      FontSize="11"
+                                      FontWeight="Medium"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button Grid.Column="2"
+                            Style="{StaticResource MenuCloseButtonStyle}"
+                            Command="{Binding CloseCommand}">
+                        <Path Data="{StaticResource XIconGeometry}"
+                              Stroke="{StaticResource White40Brush}"
+                              StrokeThickness="2"
+                              Width="20" Height="20"
+                              Stretch="Uniform"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Content -->
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="32"
+                          Background="Transparent">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Column: Recent Projects -->
+                    <StackPanel Grid.Column="0">
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+               Text="НЕДАВНИЕ ПРОЕКТЫ"
+               Style="{StaticResource MenuSectionStyle}"/>
+                            <Button Grid.Column="1"
+            Style="{StaticResource TextButtonStyle}"
+            Padding="8,4">
+                                <TextBlock Text="Все проекты"
+                  Foreground="{StaticResource Gold400Brush}"
+                  FontSize="11"
+                  FontWeight="Bold"/>
+                            </Button>
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding RecentProjects}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource MenuItemStyle}"
+                                            Height="72"
+                                            Margin="0,0,0,8"
+                                            Opacity="{Binding IsDimmed, Converter={StaticResource BoolToOpacityConverter}}">
+                                        <Grid Margin="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Icon with gradient -->
+                                            <Border Grid.Column="0"
+                                                    Width="56" Height="56"
+                                                    BorderBrush="{StaticResource BorderLightBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="16"
+                                                    Margin="0,0,12,0">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="{Binding Color, Converter={StaticResource StringToColorConverter}}" Offset="0.2"/>
+                                                        <GradientStop Color="Transparent" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Path Data="{Binding Icon, Converter={StaticResource IconToGeometryConverter}}"
+                                                      Fill="{Binding Color, Converter={StaticResource StringToBrushConverter}}"
+                                                      Width="24" Height="24"
+                                                      Stretch="Uniform"
+                                                      Opacity="0.8"/>
+                                            </Border>
+
+                                            <!-- Project info -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}"
+                                                          Foreground="White"
+                                                          FontSize="14"
+                                                          FontWeight="Bold"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding TimeAgo}"
+                                                              Foreground="{StaticResource White40Brush}"
+                                                              FontSize="10"
+                                                              FontFamily="Consolas"/>
+                                                    <TextBlock Text="•"
+                                                              Foreground="{StaticResource White20Brush}"
+                                                              Margin="8,0"
+                                                              FontSize="10"/>
+                                                    <TextBlock Text="{Binding Status}"
+                                                              Foreground="{Binding StatusColor, Converter={StaticResource StringToBrushConverter}}"
+                                                              FontSize="10"
+                                                              FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <!-- Chevron -->
+                                            <Path Grid.Column="2"
+                                                  Data="{StaticResource ChevronRightIconGeometry}"
+                                                  Stroke="{StaticResource White10Brush}"
+                                                  StrokeThickness="2"
+                                                  Width="20" Height="20"
+                                                  Stretch="Uniform"
+                                                  Margin="8,0"/>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Right Column: Quick Actions & Stats -->
+                    <StackPanel Grid.Column="2">
+                        <!-- Quick Actions -->
+                        <TextBlock Text="БЫСТРЫЕ ДЕЙСТВИЯ"
+                                  Style="{StaticResource MenuSectionStyle}"
+                                  Margin="0,0,0,16"/>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- New Project -->
+                            <Button Grid.Row="0" Grid.Column="0"
+                                    Style="{StaticResource MenuItemStyle}"
+                                    Height="88"
+                                    Margin="0,0,4,4"
+                                    Command="{Binding NewProjectCommand}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Path Data="{StaticResource PlusCircleIconGeometry}"
+                                          Fill="{StaticResource Gold400Brush}"
+                                          Width="28" Height="28"
+                                          Stretch="Uniform"
+                                          Margin="0,0,0,8"/>
+                                    <TextBlock Text="Новый проект"
+                                              Foreground="White"
+                                              FontSize="12"
+                                              FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Open -->
+                            <Button Grid.Row="0" Grid.Column="1"
+                                    Style="{StaticResource MenuItemStyle}"
+                                    Height="88"
+                                    Margin="4,0,0,4"
+                                    Command="{Binding OpenProjectCommand}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Path Data="{StaticResource FolderUpIconGeometry}"
+                                          Fill="{StaticResource White40Brush}"
+                                          Width="28" Height="28"
+                                          Stretch="Uniform"
+                                          Margin="0,0,0,8"/>
+                                    <TextBlock Text="Открыть..."
+                                              Foreground="White"
+                                              FontSize="12"
+                                              FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Examples -->
+                            <Button Grid.Row="1" Grid.Column="0"
+                                    Style="{StaticResource MenuItemStyle}"
+                                    Height="88"
+                                    Margin="0,4,4,0"
+                                    Command="{Binding OpenExamplesCommand}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Path Data="{StaticResource LibraryIconGeometry}"
+                                          Fill="{StaticResource White40Brush}"
+                                          Width="28" Height="28"
+                                          Stretch="Uniform"
+                                          Margin="0,0,0,8"/>
+                                    <TextBlock Text="Примеры"
+                                              Foreground="White"
+                                              FontSize="12"
+                                              FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Datasets -->
+                            <Button Grid.Row="1" Grid.Column="1"
+                                    Style="{StaticResource MenuItemStyle}"
+                                    Height="88"
+                                    Margin="4,4,0,0"
+                                    Command="{Binding OpenDatasetsCommand}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Path Data="{StaticResource DatabaseIconGeometry}"
+                                          Fill="{StaticResource White40Brush}"
+                                          Width="28" Height="28"
+                                          Stretch="Uniform"
+                                          Margin="0,0,0,8"/>
+                                    <TextBlock Text="Датасеты"
+                                              Foreground="White"
+                                              FontSize="12"
+                                              FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <!-- Statistics -->
+                        <TextBlock Text="СТАТИСТИКА ЛАБОРАТОРИИ"
+                                  Style="{StaticResource MenuSectionStyle}"
+                                  Margin="0,24,0,16"/>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Projects Count -->
+                            <Border Grid.Row="0" Grid.Column="0"
+                                    Background="{StaticResource Black30Brush}"
+                                    BorderBrush="{StaticResource BorderLightBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="20"
+                                    Padding="16"
+                                    Margin="0,0,4,4">
+                                <StackPanel>
+                                    <TextBlock Text="Проектов"
+                                              Foreground="{StaticResource White30Brush}"
+                                              FontSize="10"
+                                              FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding TotalProjects}"
+                                              Foreground="White"
+                                              FontSize="28"
+                                              FontWeight="Black"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Best Accuracy -->
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    Background="{StaticResource Black30Brush}"
+                                    BorderBrush="{StaticResource BorderLightBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="20"
+                                    Padding="16"
+                                    Margin="4,0,0,4">
+                                <StackPanel>
+                                    <TextBlock Text="Точность"
+                                              Foreground="{StaticResource White30Brush}"
+                                              FontSize="10"
+                                              FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding BestAccuracy, StringFormat={}{0:F1}%}"
+                                              Foreground="{StaticResource Emerald400Brush}"
+                                              FontSize="28"
+                                              FontWeight="Black"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Training Time -->
+                            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Background="{StaticResource Black30Brush}"
+                                    BorderBrush="{StaticResource BorderLightBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="20"
+                                    Padding="16"
+                                    Margin="0,4,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Время обучения"
+                                                  Foreground="{StaticResource White30Brush}"
+                                                  FontSize="10"
+                                                  FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding TotalTrainingTime}"
+                                                  Foreground="White"
+                                                  FontSize="20"
+                                                  FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <Path Grid.Column="1"
+                                          Data="{StaticResource ClockIconGeometry}"
+                                          Fill="{StaticResource White10Brush}"
+                                          Width="32" Height="32"
+                                          Stretch="Uniform"
+                                          VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <TextBlock Text="{Binding LastUpdate}"
+                                  Foreground="{StaticResource White20Brush}"
+                                  FontSize="10"
+                                  FontStyle="Italic"
+                                  Margin="16,8,0,0"/>
+
+                        <!-- Help Section -->
+                        <Border Background="{StaticResource Gold500Brush}"
+                                Opacity="0.05"
+                                BorderBrush="{StaticResource Gold400Brush}"
+                                BorderThickness="1"
+                                CornerRadius="20"
+                                Padding="16"
+                                Margin="0,24,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Path Grid.Column="0"
+                                      Data="{StaticResource SparklesIconGeometry}"
+                                      Fill="{StaticResource Gold400Brush}"
+                                      Width="24" Height="24"
+                                      Stretch="Uniform"
+                                      Margin="0,0,12,0"/>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="Нужна помощь?"
+                                              Foreground="White"
+                                              FontSize="12"
+                                              FontWeight="Bold"/>
+                                    <TextBlock Text="Посмотрите наши видео-уроки"
+                                              Foreground="{StaticResource White40Brush}"
+                                              FontSize="10"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="2"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Height="32"
+                                        Padding="16,0"
+                                        Command="{Binding ShowTutorialsCommand}">
+                                    <TextBlock Text="Смотреть"
+                                              Foreground="{StaticResource Coal950Brush}"
+                                              FontSize="10"
+                                              FontWeight="Bold"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <!-- Footer -->
+            <Border Grid.Row="2"
+                    Background="{StaticResource Coal900Brush}"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    BorderThickness="0,1,0,0"
+                    Padding="24,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Path Data="{StaticResource CpuIconGeometry}"
+                              Fill="{StaticResource White20Brush}"
+                              Width="20" Height="20"
+                              Stretch="Uniform"
+                              Margin="0,0,8,0"/>
+                        <TextBlock Text="System Engine v1.4.2-Dashboard-Active"
+                                  Foreground="{StaticResource White30Brush}"
+                                  FontSize="10"
+                                  FontFamily="Consolas"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button Style="{StaticResource TextButtonStyle}"
+                                Command="{Binding OpenDocumentationCommand}">
+                            <TextBlock Text="Документация"
+                                      Foreground="{StaticResource White30Brush}"
+                                      FontSize="10"
+                                      FontWeight="Bold"/>
+                        </Button>
+                        <TextBlock Text="•"
+                                  Foreground="{StaticResource White20Brush}"
+                                  Margin="12,0"/>
+                        <Button Style="{StaticResource TextButtonStyle}"
+                                Command="{Binding OpenSupportCommand}">
+                            <TextBlock Text="Поддержка"
+                                      Foreground="{StaticResource White30Brush}"
+                                      FontSize="10"
+                                      FontWeight="Bold"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

@@ -122,16 +122,20 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Button Content="Home" 
                         Tag="{StaticResource HomeIcon}"
-                        Style="{StaticResource IconButtonStyle}"/>
+                        Style="{StaticResource IconButtonStyle}"
+                        Command="{Binding ShowHomeMenuCommand}"/>
                 <Button Content="File" 
                         Tag="{StaticResource FileIcon}"
-                        Style="{StaticResource IconButtonStyle}"/>
+                        Style="{StaticResource IconButtonStyle}"
+                        Command="{Binding ShowFileMenuCommand}"/>
                 <Button Content="View" 
                         Tag="{StaticResource ViewIcon}"
-                        Style="{StaticResource IconButtonStyle}"/>
+                        Style="{StaticResource IconButtonStyle}"
+                        Command="{Binding ShowViewMenuCommand}"/>
                 <Button Content="Help" 
                         Tag="{StaticResource HelpIcon}"
-                        Style="{StaticResource IconButtonStyle}"/>
+                        Style="{StaticResource IconButtonStyle}"
+                        Command="{Binding ShowHelpMenuCommand}"/>
             </StackPanel>
 
             <!-- Spacer -->

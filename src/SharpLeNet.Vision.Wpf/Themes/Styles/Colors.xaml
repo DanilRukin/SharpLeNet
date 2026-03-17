@@ -43,4 +43,12 @@
     <Color x:Key="ActivationPurple">#f0abfc</Color>
     <Color x:Key="FlattenPink">#fda4af</Color>
 
+    <Color x:Key="Rose400Color">#f472b6</Color>
+    <Color x:Key="Rose500Color">#ec4899</Color>
+    <Color x:Key="Rose600Color">#db2777</Color>
+
+    <Color x:Key="Indigo400Color">#818cf8</Color>
+    <Color x:Key="Indigo500Color">#6366f1</Color>
+    <Color x:Key="Indigo600Color">#4f46e5</Color>
+
 </ResourceDictionary>

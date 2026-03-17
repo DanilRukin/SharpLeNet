@@ -22,4 +22,10 @@
     <local:PercentageToWidthConverter x:Key="PercentageToWidthConverter"/>
     <local:BooleanToObjectConverter x:Key="BooleanToObjectConverter"/>
     <local:ThumbPositionConverter x:Key="ThumbPositionConverter"/>
+    <local:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+    <local:StringToColorConverter x:Key="StringToColorConverter"/>
+    <local:IconToGeometryConverter x:Key="IconToGeometryConverter"/>
+    <local:BoolToGoldConverter x:Key="BoolToGoldConverter"/>
+    <local:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
+    <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
 </ResourceDictionary>

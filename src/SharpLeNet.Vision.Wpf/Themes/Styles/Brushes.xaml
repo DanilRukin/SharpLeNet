@@ -26,6 +26,14 @@
     <SolidColorBrush x:Key="Gold400Brush" Color="#ffd700"/>
     <SolidColorBrush x:Key="Gold500Brush" Color="#d4af37"/>
 
+    <SolidColorBrush x:Key="Rose400Brush" Color="{StaticResource Rose400Color}"/>
+    <SolidColorBrush x:Key="Rose500Brush" Color="{StaticResource Rose500Color}"/>
+    <SolidColorBrush x:Key="Rose600Brush" Color="{StaticResource Rose600Color}"/>
+
+    <SolidColorBrush x:Key="Indigo400Brush" Color="{StaticResource Indigo400Color}"/>
+    <SolidColorBrush x:Key="Indigo500Brush" Color="{StaticResource Indigo500Color}"/>
+    <SolidColorBrush x:Key="Indigo600Brush" Color="{StaticResource Indigo600Color}"/>
+
 
     <!-- White Brushes -->
     <SolidColorBrush x:Key="WhiteBrush" Color="White"/>
@@ -33,6 +41,7 @@
     <SolidColorBrush x:Key="White10Brush" Color="{StaticResource White10}"/>
     <SolidColorBrush x:Key="White15Brush" Color="{StaticResource White15}"/>
     <SolidColorBrush x:Key="White20Brush" Color="{StaticResource White20}"/>
+    <SolidColorBrush x:Key="White25Brush" Color="#40FFFFFF"/>
     <SolidColorBrush x:Key="White30Brush" Color="{StaticResource White30}"/>
     <SolidColorBrush x:Key="White40Brush" Color="{StaticResource White40}"/>
     <SolidColorBrush x:Key="White45Brush" Color="{StaticResource White45}"/>

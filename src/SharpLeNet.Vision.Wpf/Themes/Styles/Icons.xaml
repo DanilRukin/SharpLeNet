@@ -77,9 +77,6 @@
     <Geometry x:Key="PencilIconGeometry">M4 20 L20 4 L28 12 L12 28 L4 28 L4 20</Geometry>
     <PathGeometry x:Key="PencilIcon" Figures="M4 20 L20 4 L28 12 L12 28 L4 28 L4 20"/>
 
-    <Geometry x:Key="UploadIconGeometry">M4 20 L12 20 L12 28 L20 28 L20 20 L28 20 L16 8 L4 20 M20 28 L28 28 L28 20</Geometry>
-    <PathGeometry x:Key="UploadIcon" Figures="M4 20 L12 20 L12 28 L20 28 L20 20 L28 20 L16 8 L4 20 M20 28 L28 28 L28 20"/>
-
     <Geometry x:Key="LinkIconGeometry">M8 16 L16 8 L24 16 M16 24 L8 16 L16 8</Geometry>
     <PathGeometry x:Key="LinkIcon" Figures="M8 16 L16 8 L24 16 M16 24 L8 16 L16 8"/>
 
@@ -88,12 +85,6 @@
 
     <Geometry x:Key="AlertTriangleIconGeometry">M16 4 L28 28 L4 28 L16 4 M16 12 L16 20 M16 24 L16 24.01</Geometry>
     <PathGeometry x:Key="AlertTriangleIcon" Figures="M16 4 L28 28 L4 28 L16 4 M16 12 L16 20 M16 24 L16 24.01"/>
-
-    <Geometry x:Key="DatabaseIconGeometry">M4 8 L28 8 L28 24 L4 24 L4 8 M4 12 L28 12 M4 20 L28 20 M4 16 L28 16</Geometry>
-    <PathGeometry x:Key="DatabaseIcon" Figures="M4 8 L28 8 L28 24 L4 24 L4 8 M4 12 L28 12 M4 20 L28 20 M4 16 L28 16"/>
-
-    <Geometry x:Key="DownloadIconGeometry">M16 4 L16 20 M8 12 L16 20 L24 12 M4 24 L28 24</Geometry>
-    <PathGeometry x:Key="DownloadIcon" Figures="M16 4 L16 20 M8 12 L16 20 L24 12 M4 24 L28 24"/>
 
     <Geometry x:Key="ExternalLinkIconGeometry">M20 4 L28 4 L28 12 M28 4 L16 16 M4 24 L24 24 L24 8</Geometry>
     <PathGeometry x:Key="ExternalLinkIcon" Figures="M20 4 L28 4 L28 12 M28 4 L16 16 M4 24 L24 24 L24 8"/>
@@ -105,5 +96,155 @@
     <PathGeometry x:Key="GridIcon" Figures="M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16"/>
 
 
+    <!-- Home Menu Icons -->
+    <Geometry x:Key="LayoutDashboardIconGeometry">M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16</Geometry>
+    <PathGeometry x:Key="LayoutDashboardIcon" Figures="M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16"/>
+
+    <Geometry x:Key="XIconGeometry">M6 6 L26 26 M26 6 L6 26</Geometry>
+    <PathGeometry x:Key="XIcon" Figures="M6 6 L26 26 M26 6 L6 26"/>
+
+    <Geometry x:Key="ChevronRightIconGeometry">M10 6 L22 16 L10 26</Geometry>
+    <PathGeometry x:Key="ChevronRightIcon" Figures="M10 6 L22 16 L10 26"/>
+
+    <Geometry x:Key="PlusCircleIconGeometry">M16 4 L16 28 M4 16 L28 16 M28 16 A12 12 0 1 1 16 4</Geometry>
+    <PathGeometry x:Key="PlusCircleIcon" Figures="M16 4 L16 28 M4 16 L28 16 M28 16 A12 12 0 1 1 16 4"/>
+
+    <Geometry x:Key="FolderUpIconGeometry">M4 8 L12 8 L16 4 L28 4 L28 24 L4 24 L4 8 M20 12 L20 20 M16 16 L24 16</Geometry>
+    <PathGeometry x:Key="FolderUpIcon" Figures="M4 8 L12 8 L16 4 L28 4 L28 24 L4 24 L4 8 M20 12 L20 20 M16 16 L24 16"/>
+
+    <Geometry x:Key="LibraryIconGeometry">M4 8 L28 8 L28 24 L4 24 L4 8 M8 4 L8 28 M24 4 L24 28</Geometry>
+    <PathGeometry x:Key="LibraryIcon" Figures="M4 8 L28 8 L28 24 L4 24 L4 8 M8 4 L8 28 M24 4 L24 28"/>
+
+    <Geometry x:Key="DatabaseIconGeometry">M4 8 L28 8 L28 24 L4 24 L4 8 M4 12 L28 12 M4 20 L28 20 M4 16 L28 16</Geometry>
+    <PathGeometry x:Key="DatabaseIcon" Figures="M4 8 L28 8 L28 24 L4 24 L4 8 M4 12 L28 12 M4 20 L28 20 M4 16 L28 16"/>
+
+    <Geometry x:Key="ClockIconGeometry">M16 4 L16 16 L22 22 M28 16 A12 12 0 1 1 16 4</Geometry>
+    <PathGeometry x:Key="ClockIcon" Figures="M16 4 L16 16 L22 22 M28 16 A12 12 0 1 1 16 4"/>
+
+    <Geometry x:Key="SparklesIconGeometry">M16 4 L18 10 L24 12 L18 14 L16 20 L14 14 L8 12 L14 10 L16 4 M24 20 L26 24 L30 26 L26 28 L24 32 L22 28 L18 26 L22 24 L24 20</Geometry>
+    <PathGeometry x:Key="SparklesIcon" Figures="M16 4 L18 10 L24 12 L18 14 L16 20 L14 14 L8 12 L14 10 L16 4 M24 20 L26 24 L30 26 L26 28 L24 32 L22 28 L18 26 L22 24 L24 20"/>
+
+    <Geometry x:Key="CpuIconGeometry">M8 8 L24 8 L24 24 L8 24 L8 8 M4 12 L8 12 M28 12 L24 12 M4 20 L8 20 M28 20 L24 20 M12 4 L12 8 M20 4 L20 8 M12 28 L12 24 M20 28 L20 24</Geometry>
+    <PathGeometry x:Key="CpuIcon" Figures="M8 8 L24 8 L24 24 L8 24 L8 8 M4 12 L8 12 M28 12 L24 12 M4 20 L8 20 M28 20 L24 20 M12 4 L12 8 M20 4 L20 8 M12 28 L12 24 M20 28 L20 24"/>
+
+    <!-- File Menu Icons -->
+    <Geometry x:Key="FileIconGeometry">M8 4 L20 4 L28 12 L28 28 L8 28 L8 4 M20 4 L20 12 L28 12</Geometry>
+    <PathGeometry x:Key="FileIcon" Figures="M8 4 L20 4 L28 12 L28 28 L8 28 L8 4 M20 4 L20 12 L28 12"/>
+
+    <Geometry x:Key="FilePlusIconGeometry">M8 4 L20 4 L28 12 L28 28 L8 28 L8 4 M20 4 L20 12 L28 12 M16 16 L16 24 M12 20 L20 20</Geometry>
+    <PathGeometry x:Key="FilePlusIcon" Figures="M8 4 L20 4 L28 12 L28 28 L8 28 L8 4 M20 4 L20 12 L28 12 M16 16 L16 24 M12 20 L20 20"/>
+
+    <Geometry x:Key="FolderOpenIconGeometry">M4 8 L12 8 L16 4 L28 4 L28 20 L24 20 L24 24 L4 24 L4 8 M24 20 L28 20 L28 24 L24 24 L24 20</Geometry>
+    <PathGeometry x:Key="FolderOpenIcon" Figures="M4 8 L12 8 L16 4 L28 4 L28 20 L24 20 L24 24 L4 24 L4 8 M24 20 L28 20 L28 24 L24 24 L24 20"/>
+
+    <Geometry x:Key="HistoryIconGeometry">M4 16 A12 12 0 1 1 16 28 M4 16 L8 16 L12 20 M4 16 L8 16 L12 12</Geometry>
+    <PathGeometry x:Key="HistoryIcon" Figures="M4 16 A12 12 0 1 1 16 28 M4 16 L8 16 L12 20 M4 16 L8 16 L12 12"/>
+
+    <Geometry x:Key="SaveIconGeometry">M4 4 L20 4 L28 12 L28 28 L4 28 L4 4 M20 4 L20 12 L28 12 M12 16 L20 16 L20 24 L12 24 L12 16</Geometry>
+    <PathGeometry x:Key="SaveIcon" Figures="M4 4 L20 4 L28 12 L28 28 L4 28 L4 4 M20 4 L20 12 L28 12 M12 16 L20 16 L20 24 L12 24 L12 16"/>
+
+    <Geometry x:Key="CopyIconGeometry">M8 4 L24 4 L24 20 L8 20 L8 4 M4 8 L8 8 L8 24 L24 24 L24 28 L4 28 L4 8</Geometry>
+    <PathGeometry x:Key="CopyIcon" Figures="M8 4 L24 4 L24 20 L8 20 L8 4 M4 8 L8 8 L8 24 L24 24 L24 28 L4 28 L4 8"/>
+
+    <Geometry x:Key="DownloadIconGeometry">M16 4 L16 20 M8 12 L16 20 L24 12 M4 24 L28 24</Geometry>
+    <PathGeometry x:Key="DownloadIcon" Figures="M16 4 L16 20 M8 12 L16 20 L24 12 M4 24 L28 24"/>
+
+    <Geometry x:Key="UploadIconGeometry">M16 4 L16 20 M8 12 L16 4 L24 12 M4 24 L28 24</Geometry>
+    <PathGeometry x:Key="UploadIcon" Figures="M16 4 L16 20 M8 12 L16 4 L24 12 M4 24 L28 24"/>
+
+    <Geometry x:Key="Settings2IconGeometry">M12 4 L12 8 M12 20 L12 28 M4 12 L8 12 M20 12 L28 12 M8 8 L6 6 M22 22 L24 24 M8 24 L6 26 M22 8 L24 6 M12 16 A4 4 0 1 1 20 16 A4 4 0 1 1 12 16</Geometry>
+    <PathGeometry x:Key="Settings2Icon" Figures="M12 4 L12 8 M12 20 L12 28 M4 12 L8 12 M20 12 L28 12 M8 8 L6 6 M22 22 L24 24 M8 24 L6 26 M22 8 L24 6 M12 16 A4 4 0 1 1 20 16 A4 4 0 1 1 12 16"/>
+
+    <Geometry x:Key="SlidersIconGeometry">M4 8 L12 8 M20 8 L28 8 M8 4 L8 12 M24 4 L24 12 M4 20 L16 20 M24 20 L28 20 M12 16 L12 24 M26 16 L26 24</Geometry>
+    <PathGeometry x:Key="SlidersIcon" Figures="M4 8 L12 8 M20 8 L28 8 M8 4 L8 12 M24 4 L24 12 M4 20 L16 20 M24 20 L28 20 M12 16 L12 24 M26 16 L26 24"/>
+
+    <Geometry x:Key="LogOutIconGeometry">M4 16 L20 16 M12 8 L20 16 L12 24 M24 4 L24 28</Geometry>
+    <PathGeometry x:Key="LogOutIcon" Figures="M4 16 L20 16 M12 8 L20 16 L12 24 M24 4 L24 28"/>
+
+    <!-- View Menu Icons -->
+    <Geometry x:Key="EyeIconGeometry">M2 16 C6 8 12 4 16 4 C20 4 26 8 30 16 C26 24 20 28 16 28 C12 28 6 24 2 16 M16 12 A4 4 0 1 1 16 20 A4 4 0 1 1 16 12</Geometry>
+    <PathGeometry x:Key="EyeIcon" Figures="M2 16 C6 8 12 4 16 4 C20 4 26 8 30 16 C26 24 20 28 16 28 C12 28 6 24 2 16 M16 12 A4 4 0 1 1 16 20 A4 4 0 1 1 16 12"/>
+
+    <Geometry x:Key="MaximizeIconGeometry">M4 4 L12 4 L12 8 L8 8 L8 12 L4 12 L4 4 M28 4 L28 12 L24 12 L24 8 L20 8 L20 4 L28 4 M4 28 L4 20 L8 20 L8 24 L12 24 L12 28 L4 28 M28 28 L20 28 L20 24 L24 24 L24 20 L28 20 L28 28</Geometry>
+    <PathGeometry x:Key="MaximizeIcon" Figures="M4 4 L12 4 L12 8 L8 8 L8 12 L4 12 L4 4 M28 4 L28 12 L24 12 L24 8 L20 8 L20 4 L28 4 M4 28 L4 20 L8 20 L8 24 L12 24 L12 28 L4 28 M28 28 L20 28 L20 24 L24 24 L24 20 L28 20 L28 28"/>
+
+    <Geometry x:Key="ZoomInIconGeometry">M18 8 A8 8 0 1 1 8 16 A8 8 0 1 1 18 8 M20 20 L28 28 M12 12 L12 20 M8 16 L16 16</Geometry>
+    <PathGeometry x:Key="ZoomInIcon" Figures="M18 8 A8 8 0 1 1 8 16 A8 8 0 1 1 18 8 M20 20 L28 28 M12 12 L12 20 M8 16 L16 16"/>
+
+    <Geometry x:Key="ZoomOutIconGeometry">M18 8 A8 8 0 1 1 8 16 A8 8 0 1 1 18 8 M20 20 L28 28 M8 16 L16 16</Geometry>
+    <PathGeometry x:Key="ZoomOutIcon" Figures="M18 8 A8 8 0 1 1 8 16 A8 8 0 1 1 18 8 M20 20 L28 28 M8 16 L16 16"/>
+
+    <Geometry x:Key="RefreshCcwIconGeometry">M20 4 C26 4 32 10 32 16 C32 22 26 28 20 28 C14 28 8 22 8 16 C8 12 10 8 14 6 M20 4 L20 12 L28 12 M4 20 L12 20 L12 28</Geometry>
+    <PathGeometry x:Key="RefreshCcwIcon" Figures="M20 4 C26 4 32 10 32 16 C32 22 26 28 20 28 C14 28 8 22 8 16 C8 12 10 8 14 6 M20 4 L20 12 L28 12 M4 20 L12 20 L12 28"/>
+
+    <Geometry x:Key="PanelLeftIconGeometry">M4 4 L28 4 L28 28 L4 28 L4 4 M12 4 L12 28</Geometry>
+    <PathGeometry x:Key="PanelLeftIcon" Figures="M4 4 L28 4 L28 28 L4 28 L4 4 M12 4 L12 28"/>
+
+    <Geometry x:Key="PanelRightIconGeometry">M4 4 L28 4 L28 28 L4 28 L4 4 M20 4 L20 28</Geometry>
+    <PathGeometry x:Key="PanelRightIcon" Figures="M4 4 L28 4 L28 28 L4 28 L4 4 M20 4 L20 28"/>
+
+    <Geometry x:Key="TerminalIconGeometry">M4 8 L16 20 L4 28 M20 28 L28 28</Geometry>
+    <PathGeometry x:Key="TerminalIcon" Figures="M4 8 L16 20 L4 28 M20 28 L28 28"/>
+
+    <Geometry x:Key="Grid3x3IconGeometry">M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16</Geometry>
+    <PathGeometry x:Key="Grid3x3Icon" Figures="M4 4 L12 4 L12 12 L4 12 L4 4 M16 4 L28 4 L28 12 L16 12 L16 4 M4 16 L12 16 L12 28 L4 28 L4 16 M16 16 L28 16 L28 28 L16 28 L16 16"/>
+
+    <Geometry x:Key="MoonIconGeometry">M20 4 C16 4 12 8 12 12 C12 18 18 24 24 24 C26 24 28 22 28 20 C24 22 20 20 18 16 C16 12 16 8 20 4</Geometry>
+    <PathGeometry x:Key="MoonIcon" Figures="M20 4 C16 4 12 8 12 12 C12 18 18 24 24 24 C26 24 28 22 28 20 C24 22 20 20 18 16 C16 12 16 8 20 4"/>
+
+    <Geometry x:Key="SunIconGeometry">M16 4 L16 8 M16 24 L16 28 M4 16 L8 16 M24 16 L28 16 M8 8 L10 10 M22 22 L24 24 M8 24 L10 22 M22 8 L24 10 M16 12 A4 4 0 1 1 16 20 A4 4 0 1 1 16 12</Geometry>
+    <PathGeometry x:Key="SunIcon" Figures="M16 4 L16 8 M16 24 L16 28 M4 16 L8 16 M24 16 L28 16 M8 8 L10 10 M22 22 L24 24 M8 24 L10 22 M22 8 L24 10 M16 12 A4 4 0 1 1 16 20 A4 4 0 1 1 16 12"/>
+
+    <Geometry x:Key="AccessibilityIconGeometry">M16 4 L16 8 M16 16 L16 28 M4 12 L8 12 M24 12 L28 12 M8 8 L10 10 M22 22 L24 24 M8 24 L10 22 M22 8 L24 10 M12 16 A4 4 0 1 1 20 16 A4 4 0 1 1 12 16</Geometry>
+    <PathGeometry x:Key="AccessibilityIcon" Figures="M16 4 L16 8 M16 16 L16 28 M4 12 L8 12 M24 12 L28 12 M8 8 L10 10 M22 22 L24 24 M8 24 L10 22 M22 8 L24 10 M12 16 A4 4 0 1 1 20 16 A4 4 0 1 1 12 16"/>
+
+    <Geometry x:Key="MousePointer2IconGeometry">M4 4 L20 20 L12 20 L8 28 L4 24 L8 20 L4 20 L20 4</Geometry>
+    <PathGeometry x:Key="MousePointer2Icon" Figures="M4 4 L20 20 L12 20 L8 28 L4 24 L8 20 L4 20 L20 4"/>
+
+    <Geometry x:Key="RulerIconGeometry">M4 4 L28 4 L28 8 L8 8 L8 28 L4 28 L4 4 M12 8 L12 12 M16 8 L16 12 M20 8 L20 12 M24 8 L24 12</Geometry>
+    <PathGeometry x:Key="RulerIcon" Figures="M4 4 L28 4 L28 8 L8 8 L8 28 L4 28 L4 4 M12 8 L12 12 M16 8 L16 12 M20 8 L20 12 M24 8 L24 12"/>
+
+    <Geometry x:Key="MagnetIconGeometry">M4 12 L12 12 L12 20 L4 20 L4 12 M20 12 L28 12 L28 20 L20 20 L20 12 M12 16 A6 6 0 0 1 20 16</Geometry>
+    <PathGeometry x:Key="MagnetIcon" Figures="M4 12 L12 12 L12 20 L4 20 L4 12 M20 12 L28 12 L28 20 L20 20 L20 12 M12 16 A6 6 0 0 1 20 16"/>
+
+    <Geometry x:Key="GitCommitIconGeometry">M16 8 L16 16 M16 24 L16 28 M8 16 A8 8 0 1 1 24 16 A8 8 0 1 1 8 16</Geometry>
+    <PathGeometry x:Key="GitCommitIcon" Figures="M16 8 L16 16 M16 24 L16 28 M8 16 A8 8 0 1 1 24 16 A8 8 0 1 1 8 16"/>
+
+    <!-- Help Menu Icons -->
+    <Geometry x:Key="HelpCircleIconGeometry">M16 4 A12 12 0 1 1 16 28 A12 12 0 1 1 16 4 M16 12 L16 16 M16 20 L16 20.01</Geometry>
+    <PathGeometry x:Key="HelpCircleIcon" Figures="M16 4 A12 12 0 1 1 16 28 A12 12 0 1 1 16 4 M16 12 L16 16 M16 20 L16 20.01"/>
+
+    <Geometry x:Key="GraduationCapIconGeometry">M4 16 L16 8 L28 16 L16 24 L4 16 M8 20 L8 24 L16 28 L24 24 L24 20</Geometry>
+    <PathGeometry x:Key="GraduationCapIcon" Figures="M4 16 L16 8 L28 16 L16 24 L4 16 M8 20 L8 24 L16 28 L24 24 L24 20"/>
+
+    <Geometry x:Key="BookOpenIconGeometry">M8 4 L16 8 L24 4 L24 20 L16 24 L8 20 L8 4 M16 8 L16 24</Geometry>
+    <PathGeometry x:Key="BookOpenIcon" Figures="M8 4 L16 8 L24 4 L24 20 L16 24 L8 20 L8 4 M16 8 L16 24"/>
+
+    <Geometry x:Key="LayersIconGeometry">M4 12 L16 6 L28 12 L16 18 L4 12 M4 18 L16 24 L28 18 M4 24 L16 30 L28 24</Geometry>
+    <PathGeometry x:Key="LayersIcon" Figures="M4 12 L16 6 L28 12 L16 18 L4 12 M4 18 L16 24 L28 18 M4 24 L16 30 L28 24"/>
+
+    <Geometry x:Key="PlayCircleIconGeometry">M4 16 A12 12 0 1 1 28 16 A12 12 0 1 1 4 16 M12 10 L22 16 L12 22 L12 10</Geometry>
+    <PathGeometry x:Key="PlayCircleIcon" Figures="M4 16 A12 12 0 1 1 28 16 A12 12 0 1 1 4 16 M12 10 L22 16 L12 22 L12 10"/>
+
+    <Geometry x:Key="KeyboardIconGeometry">M4 8 L28 8 L28 20 L4 20 L4 8 M8 12 L10 12 M12 12 L14 12 M16 12 L18 12 M20 12 L22 12 M24 12 L26 12 M8 16 L24 16</Geometry>
+    <PathGeometry x:Key="KeyboardIcon" Figures="M4 8 L28 8 L28 20 L4 20 L4 8 M8 12 L10 12 M12 12 L14 12 M16 12 L18 12 M20 12 L22 12 M24 12 L26 12 M8 16 L24 16"/>
+
+    <Geometry x:Key="BugIconGeometry">M16 4 L16 12 M8 8 L12 12 M24 8 L20 12 M8 16 L4 16 L4 20 L8 20 M24 16 L28 16 L28 20 L24 20 M8 24 C8 28 12 28 16 28 C20 28 24 28 24 24 L24 20 L8 20 L8 24</Geometry>
+    <PathGeometry x:Key="BugIcon" Figures="M16 4 L16 12 M8 8 L12 12 M24 8 L20 12 M8 16 L4 16 L4 20 L8 20 M24 16 L28 16 L28 20 L24 20 M8 24 C8 28 12 28 16 28 C20 28 24 28 24 24 L24 20 L8 20 L8 24"/>
+
+    <Geometry x:Key="GithubIconGeometry">M8 4 C4 6 4 10 4 14 C4 20 8 24 16 26 C16 28 16 30 12 30 C8 30 8 26 8 26 C6 22 4 22 4 22 C2 20 4 20 4 20 C6 20 6 22 8 22 C12 24 16 22 16 20 C16 18 14 16 12 16 C8 16 4 14 4 10 C4 8 6 6 8 4 M24 4 C26 6 28 8 28 10 C28 14 24 16 20 16 C18 16 16 18 16 20 C16 22 20 24 24 22 C26 22 26 26 22 26 C18 26 16 30 16 28 C16 26 24 24 24 20 C24 18 22 16 20 16 C24 16 28 14 28 10 C28 8 26 6 24 4</Geometry>
+    <PathGeometry x:Key="GithubIcon" Figures="M8 4 C4 6 4 10 4 14 C4 20 8 24 16 26 C16 28 16 30 12 30 C8 30 8 26 8 26 C6 22 4 22 4 22 C2 20 4 20 4 20 C6 20 6 22 8 22 C12 24 16 22 16 20 C16 18 14 16 12 16 C8 16 4 14 4 10 C4 8 6 6 8 4 M24 4 C26 6 28 8 28 10 C28 14 24 16 20 16 C18 16 16 18 16 20 C16 22 20 24 24 22 C26 22 26 26 22 26 C18 26 16 30 16 28 C16 26 24 24 24 20 C24 18 22 16 20 16 C24 16 28 14 28 10 C28 8 26 6 24 4"/>
+
+    <Geometry x:Key="MessageSquareIconGeometry">M4 4 L28 4 L28 20 L16 20 L8 28 L8 20 L4 20 L4 4</Geometry>
+    <PathGeometry x:Key="MessageSquareIcon" Figures="M4 4 L28 4 L28 20 L16 20 L8 28 L8 20 L4 20 L4 4"/>
+
+    <Geometry x:Key="LightbulbIconGeometry">M12 4 A8 8 0 1 1 20 12 C20 16 16 18 16 22 L16 24 M12 24 L20 24 M14 28 L18 28</Geometry>
+    <PathGeometry x:Key="LightbulbIcon" Figures="M12 4 A8 8 0 1 1 20 12 C20 16 16 18 16 22 L16 24 M12 24 L20 24 M14 28 L18 28"/>
+
+    <Geometry x:Key="InfoIconGeometry">M16 4 A12 12 0 1 1 16 28 A12 12 0 1 1 16 4 M16 12 L16 16 M16 20 L16 20.01</Geometry>
+    <PathGeometry x:Key="InfoIcon" Figures="M16 4 A12 12 0 1 1 16 28 A12 12 0 1 1 16 4 M16 12 L16 16 M16 20 L16 20.01"/>
+
+    <Geometry x:Key="CheckIconGeometry">M4 16 L12 24 L28 8</Geometry>
+    <PathGeometry x:Key="CheckIcon" Figures="M4 16 L12 24 L28 8"/>
 </ResourceDictionary>
     

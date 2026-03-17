@@ -1,4 +1,5 @@
 ﻿using SharpLeNet.Vision.Wpf.Infrastructure;
+using SharpLeNet.Vision.Wpf.ViewModels.Menu;
 using System.Windows.Input;
 
 namespace SharpLeNet.Vision.Wpf.ViewModels;
@@ -18,6 +19,8 @@ public class RibbonViewModel : BaseViewModel
         ShowFileMenuCommand = new RelayCommand(ShowFileMenu);
         ShowViewMenuCommand = new RelayCommand(ShowViewMenu);
         ShowHelpCommand = new RelayCommand(ShowHelp);
+        ShowHomeMenuCommand = new RelayCommand(ShowHomeMenu);
+        ShowHelpMenuCommand = new RelayCommand(ShowHelpMenu);
 
         // Команды действий
         QuickStartCommand = new RelayCommand(QuickStart);
@@ -56,14 +59,16 @@ public class RibbonViewModel : BaseViewModel
 
     // Команды
     public ICommand NavigateHomeCommand { get; }
-    public ICommand ShowFileMenuCommand { get; }
-    public ICommand ShowViewMenuCommand { get; }
     public ICommand ShowHelpCommand { get; }
     public ICommand QuickStartCommand { get; }
     public ICommand OpenSettingsCommand { get; }
     public ICommand StartTrainingCommand { get; }
     public ICommand PauseTrainingCommand { get; }
     public ICommand StopTrainingCommand { get; }
+    public ICommand ShowHomeMenuCommand { get; }
+    public ICommand ShowFileMenuCommand { get; }
+    public ICommand ShowViewMenuCommand { get; }
+    public ICommand ShowHelpMenuCommand { get; }
 
     // Методы команд
     private void NavigateHome(object? parameter)
@@ -72,17 +77,6 @@ public class RibbonViewModel : BaseViewModel
         _mainViewModel.SelectedTab = _mainViewModel.Architecture;
     }
 
-    private void ShowFileMenu(object? parameter)
-    {
-        // Показать меню File
-        var dialog = new System.Windows.Controls.ContextMenu();
-        // Здесь можно создать меню программно или через XAML
-    }
-
-    private void ShowViewMenu(object? parameter)
-    {
-        // Показать меню View
-    }
 
     private void ShowHelp(object? parameter)
     {
@@ -122,5 +116,31 @@ public class RibbonViewModel : BaseViewModel
     public void UpdateTrainingState(bool isTraining)
     {
         IsTraining = isTraining;
+    }
+
+    private void ShowHomeMenu(object? parameter)
+    {
+        // Открыть Home меню
+        var menu = new HomeMenuViewModel();
+        menu.Open();
+        // Здесь нужно добавить логику отображения меню
+    }
+
+    private void ShowFileMenu(object? parameter)
+    {
+        var menu = new FileMenuViewModel();
+        menu.Open();
+    }
+
+    private void ShowViewMenu(object? parameter)
+    {
+        var menu = new ViewMenuViewModel();
+        menu.Open();
+    }
+
+    private void ShowHelpMenu(object? parameter)
+    {
+        var menu = new HelpMenuViewModel();
+        menu.Open();
     }
 }

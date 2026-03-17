@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="SharpLeNet.Vision.Wpf.Views.Menu.BaseMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SharpLeNet.Vision.Wpf.Views.Menu"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="Transparent"
+             Visibility="{Binding IsOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+    <Grid>
+        <!-- Полупрозрачный фон -->
+        <Border Background="#80000000"
+                MouseDown="Background_MouseDown"/>
+
+        <!-- Центрированный контейнер для содержимого -->
+        <Grid HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <ContentPresenter x:Name="MenuContent"/>
+        </Grid>
+    </Grid>
+</UserControl>
